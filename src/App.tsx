@@ -5,6 +5,7 @@ import { DemoStorage, GoogleSheetsStorage, type StorageService } from './storage
 import { DataProvider } from './storage/DataContext';
 import { demoDB } from './lib/seed';
 import ConnectScreen from './features/setup/ConnectScreen';
+import PasscodeGate from './features/setup/PasscodeGate';
 import AppShell from './components/layout/AppShell';
 
 const SA_SHEET = (import.meta.env.VITE_SPREADSHEET_ID ?? '').trim();
@@ -18,9 +19,11 @@ export default function App() {
 function ServiceAccountApp({ spreadsheetId }: { spreadsheetId: string }) {
   const storage = useMemo(() => new GoogleSheetsStorage(null, spreadsheetId), [spreadsheetId]);
   return (
-    <DataProvider key={spreadsheetId} storage={storage}>
-      <AppShell />
-    </DataProvider>
+    <PasscodeGate spreadsheetId={spreadsheetId}>
+      <DataProvider key={spreadsheetId} storage={storage}>
+        <AppShell />
+      </DataProvider>
+    </PasscodeGate>
   );
 }
 

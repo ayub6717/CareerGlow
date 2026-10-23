@@ -12,3 +12,12 @@ export function getSavedSpreadsheetId(): string {
 export function saveSpreadsheetId(id: string | null): void {
   try { if (id) localStorage.setItem(KEY, id); else localStorage.removeItem(KEY); } catch { /* private mode */ }
 }
+
+const PASS_KEY = 'blueprint.passcode';
+/** Passcode for the service-account proxy on a public deploy. Remembered per device so it's asked once. */
+export function getPasscode(): string {
+  try { return localStorage.getItem(PASS_KEY) || ''; } catch { return ''; }
+}
+export function savePasscode(code: string | null): void {
+  try { if (code) localStorage.setItem(PASS_KEY, code); else localStorage.removeItem(PASS_KEY); } catch { /* private mode */ }
+}

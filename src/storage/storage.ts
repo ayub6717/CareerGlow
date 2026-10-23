@@ -1,6 +1,7 @@
 import type { DB, TableName, Tables } from '../types';
 import { SCHEMA, TABLES, emptyDB, fromRow, headers, toRow } from './schema';
 import type { GoogleAuth } from './googleAuth';
+import { getPasscode } from '../config';
 
 export interface LoadResult { db: DB; warnings: string[] }
 
@@ -60,7 +61,7 @@ export function parseSpreadsheetId(input: string): string | null {
 }
 
 async function call<T>(auth: GoogleAuth | null, url: string, init: RequestInit = {}, attempt = 0): Promise<T> {
-  const authz: Record<string, string> = auth ? { Authorization: `Bearer ${await auth.getToken()}` } : {};
+  const authz: Record<string, string> = auth ? { Authorization: `Bearer ${await auth.getToken()}` } : { 'X-App-Passcode': getPasscode() };
   let res: Response;
   try {
     res = await fetch(url, { ...init, headers: { ...(init.headers || {}), ...authz, 'Content-Type': 'application/json' } });
@@ -74,7 +75,8 @@ async function call<T>(auth: GoogleAuth | null, url: string, init: RequestInit =
     let msg = `Google Sheets error ${res.status}`;
     try { const j = await res.json(); if (j?.error?.message) msg = j.error.message; } catch { /* ignore */ }
     if (res.status === 403) msg = auth ? `No permission to use this spreadsheet. (${msg})` : `No permission to use this spreadsheet — share it (Editor) with the service account's email. (${msg})`;
-    if (res.status === 404) msg = 'Spreadsheet not found. Check the link or ID.';
+    if (res.status === 404) msg = auth ? 'Spreadsheet not found. Check the link or ID.' : 'Spreadsheet not found — or the /api/sheets proxy isn’t running on this host.';
+    if (res.status === 401 && !auth) msg = 'Wrong passcode.';
     throw new SheetsError(msg, res.status);
   }
   return (res.status === 204 ? undefined : await res.json()) as T;

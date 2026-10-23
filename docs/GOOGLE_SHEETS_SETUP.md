@@ -102,5 +102,23 @@ Instead of signing in each time, the dev server can talk to Sheets with a **serv
 5. `yarn dev` — the app opens straight into your data. The browser calls `/api/sheets/…`; the proxy in
    `server/sheetsProxy.ts` signs each request with the key, which never reaches the browser.
 
-This works while `yarn dev` (or `yarn preview`) runs on your Mac. A static deploy has no proxy, so using it
-on iPhone needs the proxy deployed as a serverless function, or the OAuth mode above.
+This works while `yarn dev` (or `yarn preview`) runs on your Mac. Optional: set `APP_PASSCODE=…` in
+`.env.local` to require the passcode locally too.
+
+### Deploying to Netlify (iPhone)
+
+The proxy runs as a Netlify Function (`netlify/functions/sheets.ts`). Drag-and-drop of `dist/` does **not**
+deploy functions — connect the GitHub repo instead (**Add new site → Import an existing project**).
+`netlify.toml` already sets the build command and publish folder.
+
+Netlify → **Site configuration → Environment variables**:
+
+| Key | Value |
+|---|---|
+| `VITE_SHEETS_MODE` | `service-account` |
+| `VITE_SPREADSHEET_ID` | the sheet id |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | the whole contents of `service-account.json` |
+| `APP_PASSCODE` | a passcode of your choice (required — the function refuses to run without it) |
+
+Then **Deploys → Trigger deploy**. The site asks for the passcode once per device and remembers it.
+The proxy only ever touches the configured spreadsheet.
