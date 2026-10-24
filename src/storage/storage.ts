@@ -1,7 +1,7 @@
 import type { DB, TableName, Tables } from '../types';
 import { SCHEMA, TABLES, emptyDB, fromRow, headers, toRow } from './schema';
 import type { GoogleAuth } from './googleAuth';
-import { getPasscode } from '../config';
+import { APPS_SCRIPT_URL } from '../config';
 
 export interface LoadResult { db: DB; warnings: string[] }
 
@@ -33,11 +33,20 @@ export class DemoStorage implements StorageService {
 
 // ---------------------------------------------------------------------------
 // Google Sheets storage — Sheets API v4 over fetch. Authorised either with the user's OAuth token, or
-// (auth = null) through the local /api/sheets proxy, which signs requests with a service-account key.
+// (auth = null) through the Apps Script web app, which makes the same Sheets API call as the sheet's owner.
 // ---------------------------------------------------------------------------
 const GOOGLE_API = 'https://sheets.googleapis.com/v4/spreadsheets';
-const PROXY_API = '/api/sheets';
-const base = (auth: GoogleAuth | null) => (auth ? GOOGLE_API : PROXY_API);
+const SCRIPT_API = 'script:';
+const base = (auth: GoogleAuth | null) => (auth ? GOOGLE_API : SCRIPT_API);
+
+/** Sends {method, path, body} to the Apps Script and unwraps its {status, body} into a normal Response.
+ *  The body is a plain string (text/plain), so the browser makes a simple request with no CORS preflight. */
+async function viaScript(url: string, init: RequestInit): Promise<Response> {
+  const r = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ method: init.method ?? 'GET', path: url.slice(SCRIPT_API.length), body: init.body ?? null }) });
+  if (!r.ok) return r;
+  const w = (await r.json()) as { status: number; body: string };
+  return new Response(w.status === 204 ? null : w.body, { status: w.status });
+}
 
 export class SheetsError extends Error {
   status: number;
@@ -61,10 +70,11 @@ export function parseSpreadsheetId(input: string): string | null {
 }
 
 async function call<T>(auth: GoogleAuth | null, url: string, init: RequestInit = {}, attempt = 0): Promise<T> {
-  const authz: Record<string, string> = auth ? { Authorization: `Bearer ${await auth.getToken()}` } : { 'X-App-Passcode': getPasscode() };
   let res: Response;
   try {
-    res = await fetch(url, { ...init, headers: { ...(init.headers || {}), ...authz, 'Content-Type': 'application/json' } });
+    res = auth
+      ? await fetch(url, { ...init, headers: { ...(init.headers || {}), Authorization: `Bearer ${await auth.getToken()}`, 'Content-Type': 'application/json' } })
+      : await viaScript(url, init);
   } catch {
     if (attempt < 2) { await sleep(800 * (attempt + 1)); return call<T>(auth, url, init, attempt + 1); }
     throw new SheetsError('Network error — check your internet connection.', 0);
@@ -74,9 +84,8 @@ async function call<T>(auth: GoogleAuth | null, url: string, init: RequestInit =
   if (!res.ok) {
     let msg = `Google Sheets error ${res.status}`;
     try { const j = await res.json(); if (j?.error?.message) msg = j.error.message; } catch { /* ignore */ }
-    if (res.status === 403) msg = auth ? `No permission to use this spreadsheet. (${msg})` : `No permission to use this spreadsheet — share it (Editor) with the service account's email. (${msg})`;
-    if (res.status === 404) msg = auth ? 'Spreadsheet not found. Check the link or ID.' : 'Spreadsheet not found — or the /api/sheets proxy isn’t running on this host.';
-    if (res.status === 401 && !auth) msg = 'Wrong passcode.';
+    if (res.status === 403) msg = `No permission to use this spreadsheet. (${msg})`;
+    if (res.status === 404) msg = 'Spreadsheet not found. Check the link or ID.';
     throw new SheetsError(msg, res.status);
   }
   return (res.status === 204 ? undefined : await res.json()) as T;

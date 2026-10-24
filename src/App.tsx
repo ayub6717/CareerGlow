@@ -1,29 +1,26 @@
 import { useMemo, useState } from 'react';
-import { GOOGLE_CLIENT_ID, USE_SERVICE_ACCOUNT, getSavedSpreadsheetId, hasClientId, saveSpreadsheetId } from './config';
+import { GOOGLE_CLIENT_ID, APPS_SCRIPT_URL, getSavedSpreadsheetId, hasClientId, saveSpreadsheetId } from './config';
 import { GoogleAuth } from './storage/googleAuth';
 import { DemoStorage, GoogleSheetsStorage, type StorageService } from './storage/storage';
 import { DataProvider } from './storage/DataContext';
 import { demoDB } from './lib/seed';
 import ConnectScreen from './features/setup/ConnectScreen';
-import PasscodeGate from './features/setup/PasscodeGate';
 import AppShell from './components/layout/AppShell';
 
 const SA_SHEET = (import.meta.env.VITE_SPREADSHEET_ID ?? '').trim();
 
 export default function App() {
-  if (USE_SERVICE_ACCOUNT && SA_SHEET) return <ServiceAccountApp spreadsheetId={SA_SHEET} />;
+  if (APPS_SCRIPT_URL && SA_SHEET) return <ScriptApp spreadsheetId={SA_SHEET} />;
   return <OAuthApp />;
 }
 
-/** No sign-in: every request goes through the local /api/sheets proxy. */
-function ServiceAccountApp({ spreadsheetId }: { spreadsheetId: string }) {
+/** No sign-in: every request goes through the Apps Script web app. */
+function ScriptApp({ spreadsheetId }: { spreadsheetId: string }) {
   const storage = useMemo(() => new GoogleSheetsStorage(null, spreadsheetId), [spreadsheetId]);
   return (
-    <PasscodeGate spreadsheetId={spreadsheetId}>
-      <DataProvider key={spreadsheetId} storage={storage}>
-        <AppShell />
-      </DataProvider>
-    </PasscodeGate>
+    <DataProvider key={spreadsheetId} storage={storage}>
+      <AppShell />
+    </DataProvider>
   );
 }
 

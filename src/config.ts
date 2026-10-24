@@ -1,7 +1,7 @@
 /** Only non-secret configuration lives in the frontend. */
 export const GOOGLE_CLIENT_ID = (import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '').trim();
-/** Service-account mode: no sign-in; the dev server's /api/sheets proxy holds the key. */
-export const USE_SERVICE_ACCOUNT = (import.meta.env.VITE_SHEETS_MODE ?? '').trim() === 'service-account';
+/** Apps Script mode: no sign-in; requests go to the user's deployed Apps Script web app (apps-script/Code.gs). */
+export const APPS_SCRIPT_URL = (import.meta.env.VITE_APPS_SCRIPT_URL ?? '').trim();
 export const hasClientId = (): boolean => /\.apps\.googleusercontent\.com$/.test(GOOGLE_CLIENT_ID);
 
 const KEY = 'blueprint.spreadsheetId';
@@ -11,13 +11,4 @@ export function getSavedSpreadsheetId(): string {
 }
 export function saveSpreadsheetId(id: string | null): void {
   try { if (id) localStorage.setItem(KEY, id); else localStorage.removeItem(KEY); } catch { /* private mode */ }
-}
-
-const PASS_KEY = 'blueprint.passcode';
-/** Passcode for the service-account proxy on a public deploy. Remembered per device so it's asked once. */
-export function getPasscode(): string {
-  try { return localStorage.getItem(PASS_KEY) || ''; } catch { return ''; }
-}
-export function savePasscode(code: string | null): void {
-  try { if (code) localStorage.setItem(PASS_KEY, code); else localStorage.removeItem(PASS_KEY); } catch { /* private mode */ }
 }

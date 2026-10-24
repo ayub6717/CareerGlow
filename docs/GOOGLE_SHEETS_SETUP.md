@@ -87,38 +87,21 @@ from your phone will be refused. To use Blueprint on iPhone 16 Pro / Pro Max:
 | `No permission to use this spreadsheet` | Sign in with the account that owns (or can edit) the sheet. |
 | Sign-in window doesn't open | Allow pop-ups for the site; tap the button again. |
 
-## No-sign-in mode (service account) — currently used
+## No-sign-in mode (Apps Script) — currently used
 
-Instead of signing in each time, the dev server can talk to Sheets with a **service account**:
+No sign-in, no server, no Netlify settings: the app talks to a small Apps Script web app that runs as you.
 
-1. Google Cloud → **IAM & Admin → Service accounts** → create one → **Keys → Add key → JSON**.
-2. Save the file as **`service-account.json`** in the project folder (git-ignored; never commit or deploy it).
-3. Share the spreadsheet with the service account's email (`…@….iam.gserviceaccount.com`) as **Editor**.
-4. In `.env.local`:
+1. <https://script.google.com> → **New project** → paste [`apps-script/Code.gs`](../apps-script/Code.gs)
+   (set `SHEET_ID` to your sheet's id) → **Save**.
+2. **Deploy → New deployment → Web app** · Execute as **Me** · Who has access **Anyone** → **Deploy** →
+   **Authorize access** → choose your account → *Advanced → Go to … (unsafe)* → **Allow**.
+3. Copy the **Web app URL** (ends with `/exec`) into `.env.local`:
    ```
-   VITE_SHEETS_MODE=service-account
    VITE_SPREADSHEET_ID=<the id from the sheet's URL>
+   VITE_APPS_SCRIPT_URL=https://script.google.com/macros/s/…/exec
    ```
-5. `yarn dev` — the app opens straight into your data. The browser calls `/api/sheets/…`; the proxy in
-   `server/sheetsProxy.ts` signs each request with the key, which never reaches the browser.
+4. `yarn dev`, or `yarn build` and drop `dist/` on Netlify.
 
-This works while `yarn dev` (or `yarn preview`) runs on your Mac. Optional: set `APP_PASSCODE=…` in
-`.env.local` to require the passcode locally too.
-
-### Deploying to Netlify (iPhone)
-
-The proxy runs as a Netlify Function (`netlify/functions/sheets.ts`). Drag-and-drop of `dist/` does **not**
-deploy functions — connect the GitHub repo instead (**Add new site → Import an existing project**).
-`netlify.toml` already sets the build command and publish folder.
-
-Netlify → **Site configuration → Environment variables**:
-
-| Key | Value |
-|---|---|
-| `VITE_SHEETS_MODE` | `service-account` |
-| `VITE_SPREADSHEET_ID` | the sheet id |
-| `GOOGLE_SERVICE_ACCOUNT_JSON` | the whole contents of `service-account.json` |
-| `APP_PASSCODE` | a passcode of your choice (required — the function refuses to run without it) |
-
-Then **Deploys → Trigger deploy**. The site asks for the passcode once per device and remembers it.
-The proxy only ever touches the configured spreadsheet.
+Anyone who has the web-app URL (it is inside the built JavaScript) can edit this one sheet. The script refuses
+every other spreadsheet. After changing `Code.gs`, use **Deploy → Manage deployments → Edit → New version**
+so the URL stays the same.
