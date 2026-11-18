@@ -185,3 +185,45 @@
 .pt-safe {
   padding-top: env(safe-area-inset-top);
 }
+
+/* ---------- Notes page body (rich text) ---------- */
+.note-body {
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.note-body:empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-faint);
+  pointer-events: none;
+}
+.note-body > * + * { margin-top: 0.35em; }
+.note-body h1 { font-family: var(--font-display); font-size: 26px; font-weight: 700; line-height: 1.2; margin-top: 0.8em; }
+.note-body h2 { font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.25; margin-top: 0.7em; }
+.note-body h3 { font-size: 17px; font-weight: 600; margin-top: 0.6em; }
+.note-body ul { list-style: disc; padding-left: 1.5em; }
+.note-body ol { list-style: decimal; padding-left: 1.6em; }
+.note-body li + li { margin-top: 0.15em; }
+.note-body a { color: var(--color-pri-ink); text-decoration: underline; text-underline-offset: 2px; }
+.note-body blockquote { border-left: 3px solid var(--color-line); padding: 0.1em 0 0.1em 0.9em; color: var(--color-mute); }
+.note-body pre, .note-body code { font-family: var(--font-mono); font-size: 14px; background: var(--color-line-soft); border-radius: 6px; padding: 0.1em 0.35em; }
+.note-body hr { border: 0; border-top: 1px solid var(--color-line); margin: 1em 0; }
+.note-body ul[data-type='check'] { list-style: none; padding-left: 0.2em; }
+.note-body ul[data-type='check'] > li { position: relative; padding-left: 1.9em; }
+.note-body ul[data-type='check'] > li::before {
+  content: '';
+  position: absolute; left: 0; top: 0.22em;
+  width: 1.15em; height: 1.15em;
+  border: 1.5px solid #b7c0cd; border-radius: 5px; background: white;
+  cursor: pointer;
+}
+.note-body ul[data-type='check'] > li[data-checked='true'] { color: var(--color-faint); text-decoration: line-through; }
+.note-body ul[data-type='check'] > li[data-checked='true']::before {
+  background: #5fae8c url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat;
+  border-color: #5fae8c;
+}
+.note-body table { border-collapse: collapse; margin: 0.6em 0; min-width: 40%; max-width: 100%; }
+.note-body th, .note-body td { border: 1px solid var(--color-line); padding: 6px 10px; min-width: 70px; vertical-align: top; text-align: left; }
+.note-body th { background: var(--color-line-soft); font-weight: 600; }
+.note-body [data-cur] { outline: 2px solid #b9c9f1; outline-offset: -2px; }
+@media (max-width: 767px) { .note-body { overflow-x: auto; } }

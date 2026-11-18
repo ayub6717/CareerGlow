@@ -61,6 +61,12 @@ export interface ContentItem { id: string; title: string; platform: string; stag
 export interface Decision { id: string; date: string; title: string; why: string; expect: string; reviewDate: string; outcome: string }
 export interface Counter { id: string; label: string; value: number; target: number }
 
+// ---------- Notes (OneNote style: notebook → section → page) ----------
+export interface Notebook { id: string; name: string; color: string; order: number; createdAt: string }
+export interface NoteSection { id: string; notebookId: string; name: string; color: string; order: number }
+/** `body` is sanitised HTML. `level` 1 = subpage (indented under the page above it). */
+export interface NotePage { id: string; sectionId: string; notebookId: string; title: string; body: string; level: number; order: number; createdAt: string; updatedAt: string }
+
 export interface Tables {
   settings: Setting;
   plannedExpenses: PlannedExpense;
@@ -83,6 +89,9 @@ export interface Tables {
   content: ContentItem;
   decisions: Decision;
   counters: Counter;
+  notebooks: Notebook;
+  noteSections: NoteSection;
+  notePages: NotePage;
 }
 export type TableName = keyof Tables;
 export type Row<T extends TableName> = Tables[T];
@@ -90,5 +99,5 @@ export type DB = { [K in TableName]: Tables[K][] };
 
 export type View =
   | 'overview' | 'goals' | 'goal' | 'tasks' | 'wallets' | 'budget' | 'reminders'
-  | 'money' | 'money-cat' | 'money-add' | 'money-edit' | 'categories' | 'accounts' | 'account' | 'transfers' | 'transfer' | 'plan'
+  | 'money' | 'money-cat' | 'money-add' | 'money-edit' | 'categories' | 'accounts' | 'account' | 'transfers' | 'transfer' | 'plan' | 'notes'
   | 'jobs' | 'skills' | 'content' | 'review';

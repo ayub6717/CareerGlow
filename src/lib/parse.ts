@@ -9,18 +9,21 @@ const MULT: Record<string, number> = {
   cr: 1e7, crore: 1e7, koti: 1e7, 'কোটি': 1e7, m: 1e6,
 };
 
-/** "120k" → 120000, "1.5 lakh" → 150000, "50k+5k" → 55000, Bangla digits ok. Empty → 0, unreadable → NaN. */
+/** "120k" → 120000, "1.5 lakh" → 150000, "50k+5k" → 55000, "-5k" → −5000, "50k-5k" → 45000, Bangla digits ok.
+ *  Empty → 0, unreadable → NaN. */
 export function parseAmount(input: string | number | null | undefined): number {
   if (typeof input === 'number') return input;
-  const t = toLatinDigits(String(input ?? '')).toLowerCase().replace(/৳|taka|tk|টাকা|,|\s/g, '');
+  const t = toLatinDigits(String(input ?? '')).toLowerCase().replace(/৳|taka|tk|টাকা|,|\s/g, '').replace(/[−–—]/g, '-');
   if (!t) return 0;
+  const parts = t.match(/[+-]?[^+-]+/g) ?? [];
+  if (parts.join('') !== t) return NaN; // stray signs such as "5k+" or "--5"
   let sum = 0;
-  for (const part of t.split('+')) {
-    const m = part.match(/^(\d*\.?\d+)([a-zঀ-৿]*)$/);
+  for (const part of parts) {
+    const m = part.match(/^([+-]?)(\d*\.?\d+)([a-zঀ-৿]*)$/);
     if (!m) return NaN;
-    const mult = m[2] ? MULT[m[2]] : 1;
+    const mult = m[3] ? MULT[m[3]] : 1;
     if (!mult) return NaN;
-    sum += parseFloat(m[1]) * mult;
+    sum += (m[1] === '-' ? -1 : 1) * parseFloat(m[2]) * mult;
   }
   return sum;
 }

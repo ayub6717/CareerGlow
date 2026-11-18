@@ -90,6 +90,20 @@ export const SCHEMA: Schema = {
     fields: { id: 'string', date: 'string', title: 'string', why: 'string', expect: 'string', reviewDate: 'string', outcome: 'string' },
   },
   counters: { sheet: 'Practice Counters', fields: { id: 'string', label: 'string', value: 'number', target: 'number' } },
+  notebooks: {
+    sheet: 'Notebooks',
+    fields: { id: 'string', name: 'string', color: 'string', order: 'number', createdAt: 'string' },
+    cascade: [{ table: 'noteSections', key: 'notebookId' }, { table: 'notePages', key: 'notebookId' }],
+  },
+  noteSections: {
+    sheet: 'Note Sections',
+    fields: { id: 'string', notebookId: 'string', name: 'string', color: 'string', order: 'number' },
+    cascade: [{ table: 'notePages', key: 'sectionId' }],
+  },
+  notePages: {
+    sheet: 'Note Pages',
+    fields: { id: 'string', sectionId: 'string', notebookId: 'string', title: 'string', body: 'string', level: 'number', order: 'number', createdAt: 'string', updatedAt: 'string' },
+  },
 };
 
 export const TABLES = Object.keys(SCHEMA) as TableName[];

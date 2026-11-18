@@ -15,6 +15,7 @@ import Categories from '../../features/money/Categories';
 import Accounts, { AccountForm } from '../../features/money/Accounts';
 import Transfers, { TransferForm } from '../../features/money/Transfers';
 import Plan from '../../features/money/Plan';
+import Notes from '../../features/notes/Notes';
 import Budget from '../../features/money/Budget';
 import Reminders from '../../features/reminders/Reminders';
 import Jobs from '../../features/career/Jobs';
@@ -26,7 +27,7 @@ const TITLES: Record<View, string> = {
   overview: 'Overview', goals: 'Goals & Plans', goal: 'Goal', tasks: 'Tasks', wallets: 'Spending', budget: 'Budget Calculator',
   reminders: 'Reminders', jobs: 'Job Applications', skills: 'Skills & Learning', content: 'Content', review: 'Review',
   money: 'Spending', 'money-cat': 'Transactions', 'money-add': 'Add transaction', 'money-edit': 'Edit transaction', categories: 'Categories',
-  accounts: 'Accounts', account: 'Account', transfers: 'Transfer history', transfer: 'Transfer', plan: 'Monthly plan',
+  accounts: 'Accounts', account: 'Account', transfers: 'Transfer history', transfer: 'Transfer', plan: 'Monthly plan', notes: 'Notes',
 };
 type Group = 'money' | 'career';
 const GROUP_OF: Partial<Record<View, Group>> = {
@@ -85,6 +86,7 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
       <NavItem v="overview" icon="home">Overview</NavItem>
       <NavItem v="goals" icon="target">Goals &amp; Plans</NavItem>
       <NavItem v="tasks" icon="check">Tasks</NavItem>
+      <NavItem v="notes" icon="book">Notes</NavItem>
       <GroupHead g="money" icon="wallet" label="Money" />
       {open.money && <Sub><NavItem v="money" sub>Spending</NavItem><NavItem v="accounts" sub>Accounts</NavItem><NavItem v="transfers" sub>Transfers</NavItem><NavItem v="categories" sub>Categories</NavItem><NavItem v="budget" sub>Budget Calculator</NavItem><NavItem v="plan" sub>Monthly plan</NavItem></Sub>}
       <NavItem v="reminders" icon="bell">Reminders</NavItem>
@@ -110,6 +112,7 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
       case 'transfers': return <Transfers />;
       case 'transfer': return <TransferForm key={param} id={param} />;
       case 'plan': return <Plan />;
+      case 'notes': return <Notes param={param} />;
       case 'budget': return <Budget />;
       case 'reminders': return <Reminders />;
       case 'jobs': return <Jobs />;
@@ -144,7 +147,7 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
           <div className="flex items-center"><SaveDot />{badge > 0 && <button className="icon-btn relative" aria-label={`${badge} reminders due`} onClick={() => go('reminders')}><Icon name="bell" size={22} /><span className="absolute right-2.5 top-2.5 size-2.5 rounded-full border-2 border-white bg-amber" /></button>}</div>
         </header>
 
-        <main className="mx-auto flex max-w-[1080px] flex-col gap-5 px-8 pb-16 pt-7 max-md:gap-4 max-md:px-4 max-md:pb-[calc(96px+env(safe-area-inset-bottom))] max-md:pt-3.5">
+        <main className={`mx-auto flex ${view === 'notes' ? 'max-w-[1480px]' : 'max-w-[1080px]'} flex-col gap-5 px-8 pb-16 pt-7 max-md:gap-4 max-md:px-4 max-md:pb-[calc(96px+env(safe-area-inset-bottom))] max-md:pt-3.5`}>
           {storage.kind === 'demo' && (
             <div className="soft flex flex-wrap items-center justify-between gap-2.5 bg-amber-soft/70 text-[15px]" role="note">
               <span><strong className="font-semibold">Demo mode.</strong> Sample data, nothing is saved.</span>
@@ -163,7 +166,7 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
         <Tab on={active === 'goals'} icon="target" label="Goals" onClick={() => go('goals')} />
         <Tab on={group === 'money'} icon="wallet" label="Money" onClick={() => go('money')} />
         <Tab on={group === 'career'} icon="briefcase" label="Career" onClick={() => go('jobs')} />
-        <Tab on={menu || ['tasks', 'reminders', 'content', 'review'].includes(active)} icon="menu" label="More" onClick={() => setMenu(true)} />
+        <Tab on={menu || ['tasks', 'notes', 'reminders', 'content', 'review'].includes(active)} icon="menu" label="More" onClick={() => setMenu(true)} />
       </nav>
 
       {menu && (

@@ -69,6 +69,18 @@ export function demoDB(): DB {
     { id: uid(), date: addDays(-2), desc: 'Top up bKash', amount: 5000, kind: 'move', category: '', walletId: 'w1', toWalletId: 'w2', createdAt: at, categoryId: '', tags: [] },
   ];
   db.categories = defaultCategories(db.txns);
+  db.notebooks = [{ id: 'nb1', name: 'Personal', color: '#7C97DD', order: 0, createdAt: at }, { id: 'nb2', name: 'Work', color: '#6DBE9A', order: 1, createdAt: at }];
+  db.noteSections = [
+    { id: 'ns1', notebookId: 'nb1', name: 'Quick Notes', color: '#E3A867', order: 0 },
+    { id: 'ns2', notebookId: 'nb1', name: 'Germany plan', color: '#A08ADB', order: 1 },
+    { id: 'ns3', notebookId: 'nb2', name: 'Meetings', color: '#64B5C4', order: 0 },
+  ];
+  db.notePages = [
+    { id: 'np1', sectionId: 'ns1', notebookId: 'nb1', title: 'Weekend to-do', body: '<p>Things to finish before Sunday:</p><ul data-type="check"><li data-checked="true">Pay internet bill</li><li data-checked="false">Bike servicing</li><li data-checked="false">Buy diapers</li></ul>', level: 0, order: 0, createdAt: at, updatedAt: at },
+    { id: 'np2', sectionId: 'ns1', notebookId: 'nb1', title: 'Book ideas', body: '<h2>To read</h2><ul><li><b>Atomic Habits</b></li><li>Deep Work</li></ul><p>Note: <span style="background-color: rgb(255, 243, 163)">ask Rahim for his copy</span>.</p>', level: 0, order: 1, createdAt: at, updatedAt: at },
+    { id: 'np3', sectionId: 'ns2', notebookId: 'nb1', title: 'Documents needed', body: '<ol><li>Transcript</li><li>IELTS</li><li>APS / VPD</li></ol>', level: 0, order: 0, createdAt: at, updatedAt: at },
+    { id: 'np4', sectionId: 'ns3', notebookId: 'nb2', title: 'Sprint planning', body: '<p>Action items go here.</p>', level: 0, order: 0, createdAt: at, updatedAt: at },
+  ];
   const b1 = uid();
   db.budgets = [{ id: b1, name: 'Gadgets', order: 0 }];
   db.budgetLines = [{ id: uid(), budgetId: b1, label: 'Laptop', amount: '120k', order: 0 }, { id: uid(), budgetId: b1, label: 'Mobile', amount: '110k', order: 1 }];

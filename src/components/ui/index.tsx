@@ -33,6 +33,12 @@ const PATHS: Record<string, ReactNode> = {
   download: <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14" />,
   eyeoff: <><path d="M3.5 12s3-6 8.5-6c1.6 0 3 .5 4.2 1.2M20.5 12s-3 6-8.5 6c-1.6 0-3-.5-4.2-1.2" /><path d="M10 10a2.8 2.8 0 0 0 4 4M4 4l16 16" /></>,
   tag: <><path d="M4 12.6V5a1 1 0 0 1 1-1h7.6l7.4 7.4-8.6 8.6z" /><circle cx="8.5" cy="8.5" r="1.3" /></>,
+  chevronsLeft: <path d="M11.5 7l-5 5 5 5M18 7l-5 5 5 5" />,
+  chevronsRight: <path d="M12.5 7l5 5-5 5M6 7l5 5-5 5" />,
+  collapse: <><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" /><path d="M9 4.5v15M15.5 9.5L13 12l2.5 2.5" /></>,
+  expand: <><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" /><path d="M9 4.5v15M13 9.5l2.5 2.5-2.5 2.5" /></>,
+  book: <><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z" /><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7h6" /></>,
+  dots: <><circle cx="6" cy="12" r="1.3" fill="currentColor" /><circle cx="12" cy="12" r="1.3" fill="currentColor" /><circle cx="18" cy="12" r="1.3" fill="currentColor" /></>,
   grid: <><rect x="4" y="4" width="6.5" height="6.5" rx="1.5" /><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" /><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" /><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" /></>,
 };
 export function Icon({ name, size = 20, className = '', fill = 'none' }: { name: keyof typeof PATHS | string; size?: number; className?: string; fill?: string }) {

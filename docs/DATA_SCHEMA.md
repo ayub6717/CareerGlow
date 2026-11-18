@@ -26,6 +26,9 @@ Values are written in RAW mode, so text that starts with `=` is stored as text, 
 | Reminders | id, title, date, kind, repeat, amount, walletId, leadDays, lastDone, done | `repeat` ∈ none, monthly, yearly |
 | Content | id, title, platform, stage, date, views | — |
 | Decisions | id, date, title, why, expect, reviewDate, outcome | — |
+| Notebooks | id, name, color, order, createdAt | Notes (OneNote style) |
+| Note Sections | id, notebookId, name, color, order | `notebookId` → Notebooks.id |
+| Note Pages | id, sectionId, notebookId, title, body, level, order, createdAt, updatedAt | `sectionId` → Note Sections.id. `body` is cleaned HTML (max ~50,000 characters per cell). `level` 1 = subpage |
 | Planned Expenses | id, label, amount, order | the monthly plan |
 | Settings | id, value | keys: income, inflation, weeklyHours, emMonths, emSaved, emMonthly |
 
@@ -38,4 +41,4 @@ subtopics** is one item (its own `done`). A topic is *Not Started* (0), *In Prog
 ## Deleting
 
 Deleting a skill also deletes its topics and subtopics; deleting a topic deletes its subtopics; deleting a goal
-deletes its budget lines, milestones, deposits and time log; deleting a budget deletes its lines.
+deletes its budget lines, milestones, deposits and time log; deleting a budget deletes its lines; deleting a notebook deletes its sections and pages; deleting a section deletes its pages.

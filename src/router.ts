@@ -3,7 +3,7 @@ import type { View } from './types';
 
 const VIEWS: View[] = [
   'overview', 'goals', 'goal', 'tasks', 'wallets', 'budget', 'reminders', 'jobs', 'skills', 'content', 'review',
-  'money', 'money-cat', 'money-add', 'money-edit', 'categories', 'accounts', 'account', 'transfers', 'transfer', 'plan',
+  'money', 'money-cat', 'money-add', 'money-edit', 'categories', 'accounts', 'account', 'transfers', 'transfer', 'plan', 'notes',
 ];
 
 function read(): { view: View; param: string } {
