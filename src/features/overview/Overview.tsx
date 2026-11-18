@@ -30,7 +30,7 @@ export default function Overview() {
   const verdict: [string, Tone] = score >= 4 ? ['Yes, on track', 'mint'] : score >= 2 ? ['Partly on track', 'amber'] : ['Off track', 'rose'];
 
   const bal = balances(db);
-  const walletTotal = db.wallets.reduce((a, w) => a + (bal.get(w.id) ?? 0), 0);
+  const walletTotal = db.wallets.filter((w) => !w.hidden).reduce((a, w) => a + (bal.get(w.id) ?? 0), 0); // hidden accounts aren't counted
   const spent = monthTotals(db.txns, ymOf(nowIdx())).out;
   const progress = active.length ? Math.round(active.reduce((a, x) => a + x.c.pct, 0) / active.length) : 0;
 
@@ -59,7 +59,7 @@ export default function Overview() {
       </Card>
 
       <Stats>
-        <Stat label="In wallets" value={<span className="num">{tkS(walletTotal)}</span>} sub={`across ${plural(db.wallets.length, 'wallet')}`} />
+        <Stat label="In accounts" value={<span className="num">{tkS(walletTotal)}</span>} sub={`across ${plural(db.wallets.filter((w) => !w.hidden).length, 'account')}`} />
         <Stat label="Spent this month" value={<span className="num">{tkS(spent)}</span>} sub={F.expense ? (spent > F.expense ? `${tkS(spent - F.expense)} over plan` : `${tkS(F.expense - spent)} left of plan`) : 'no monthly plan set'} />
         <Stat label="Goals progress" value={<span className="num">{progress}%</span>} sub={<Bar thin pct={progress} className="mt-1.5" />} />
         <Stat label="Next deadline" value={<span className="text-base font-semibold leading-snug">{deadlines[0]?.name ?? 'Nothing scheduled'}</span>} sub={deadlines[0]?.when} />

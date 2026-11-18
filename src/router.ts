@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import type { View } from './types';
 
-const VIEWS: View[] = ['overview', 'goals', 'goal', 'tasks', 'wallets', 'budget', 'reminders', 'jobs', 'skills', 'content', 'review'];
+const VIEWS: View[] = [
+  'overview', 'goals', 'goal', 'tasks', 'wallets', 'budget', 'reminders', 'jobs', 'skills', 'content', 'review',
+  'money', 'money-cat', 'money-add', 'money-edit', 'categories', 'accounts', 'account', 'transfers', 'transfer', 'plan',
+];
 
 function read(): { view: View; param: string } {
   const [, v, p] = window.location.hash.split('/');
-  const view = (VIEWS as string[]).includes(v) ? (v as View) : 'overview';
+  const view = v === 'wallets' ? 'money' : (VIEWS as string[]).includes(v) ? (v as View) : 'overview'; // old link → new Spending page
   return { view, param: decodeURIComponent(p ?? '') };
 }
 

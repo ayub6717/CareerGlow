@@ -39,7 +39,7 @@ export default function Reminders() {
     else update('reminders', r.id, { done: true }, { toast: 'Marked done' });
   };
   const pay = (r: Reminder, nx: Date | null) => {
-    create('txns', { id: uid(), date: today(), desc: r.title, amount: r.amount, kind: 'out', category: r.kind === 'Tax' ? 'Tax' : r.kind === 'Birthday' || r.kind === 'Anniversary' ? 'Gifts' : 'Bills & utilities', walletId: r.walletId, toWalletId: '', createdAt: nowIso() });
+    create('txns', { id: uid(), date: today(), desc: r.title, amount: r.amount, kind: 'out', category: r.kind === 'Tax' ? 'Tax' : r.kind === 'Birthday' || r.kind === 'Anniversary' ? 'Gifts' : 'Bills & utilities', walletId: r.walletId, toWalletId: '', createdAt: nowIso(), categoryId: '', tags: [] });
     markDone(r, nx);
   };
 

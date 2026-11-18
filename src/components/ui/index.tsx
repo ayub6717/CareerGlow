@@ -27,6 +27,13 @@ const PATHS: Record<string, ReactNode> = {
   sheet: <><rect x="4.5" y="3.5" width="15" height="17" rx="2.5" /><path d="M4.5 9h15M4.5 14.5h15M10 9v11.5" /></>,
   calc: <><rect x="5" y="3.5" width="14" height="17" rx="2.5" /><path d="M8.5 7.5h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" /></>,
   plus: <path d="M12 5v14M5 12h14" />,
+  swap: <path d="M5 8h13l-3.5-3.5M19 16H6l3.5 3.5" />,
+  history: <><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3L4.5 9" /><path d="M4.5 4.5V9H9M12 8v4.2l2.8 1.8" /></>,
+  search: <><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4 4" /></>,
+  download: <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14" />,
+  eyeoff: <><path d="M3.5 12s3-6 8.5-6c1.6 0 3 .5 4.2 1.2M20.5 12s-3 6-8.5 6c-1.6 0-3-.5-4.2-1.2" /><path d="M10 10a2.8 2.8 0 0 0 4 4M4 4l16 16" /></>,
+  tag: <><path d="M4 12.6V5a1 1 0 0 1 1-1h7.6l7.4 7.4-8.6 8.6z" /><circle cx="8.5" cy="8.5" r="1.3" /></>,
+  grid: <><rect x="4" y="4" width="6.5" height="6.5" rx="1.5" /><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" /><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" /><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" /></>,
 };
 export function Icon({ name, size = 20, className = '', fill = 'none' }: { name: keyof typeof PATHS | string; size?: number; className?: string; fill?: string }) {
   return (

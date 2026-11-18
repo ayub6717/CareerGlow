@@ -1,3 +1,4 @@
+import { catId, defaultCategories } from '../features/money/money';
 import type { DB, Subtopic, Topic } from '../types';
 import { emptyDB } from '../storage/schema';
 import { addDays, nowIdx, nowIso, uid, ymOf } from './format';
@@ -53,16 +54,21 @@ export function demoDB(): DB {
     { id: uid(), title: 'Ask about land papers', goalId: g3, status: 'done', priority: 'Med', due: addDays(-3), hours: 1, dependsOn: '', blocked: false, doneAt: addDays(-2), createdAt: at },
   ];
   db.wallets = [
-    { id: 'w1', name: 'Bank account', kind: 'Bank', opening: 250000, order: 0 },
-    { id: 'w2', name: 'bKash', kind: 'Mobile wallet', opening: 8000, order: 1 },
-    { id: 'w3', name: 'Cash', kind: 'Cash', opening: 5000, order: 2 },
+    { id: 'w1', name: 'Bank account', kind: 'Bank', opening: 250000, order: 0, icon: 'landmark', color: '#7C97DD', hidden: false },
+    { id: 'w2', name: 'bKash', kind: 'Mobile wallet', opening: 8000, order: 1, icon: 'smartphone', color: '#E58E9E', hidden: false },
+    { id: 'w3', name: 'Cash', kind: 'Cash', opening: 5000, order: 2, icon: 'banknote', color: '#6DBE9A', hidden: false },
+    { id: 'w4', name: 'To lend', kind: 'Cash', opening: 5000, order: 3, icon: 'hand-coins', color: '#E3A867', hidden: true },
   ];
+  const T = (days: number, kind: 'out' | 'in', cat: string, amount: number, walletId: string, desc = '', tags: string[] = []) =>
+    ({ id: uid(), date: addDays(days), desc, amount, kind, category: cat, walletId, toWalletId: '', createdAt: at, categoryId: catId(kind, cat), tags });
   db.txns = [
-    { id: uid(), date: addDays(-6), desc: 'Monthly groceries', amount: 6500, kind: 'out', category: 'Groceries', walletId: 'w1', toWalletId: '', createdAt: at },
-    { id: uid(), date: addDays(-4), desc: 'Internet bill', amount: 1500, kind: 'out', category: 'Bills & utilities', walletId: 'w2', toWalletId: '', createdAt: at },
-    { id: uid(), date: addDays(-3), desc: 'Rickshaw & CNG', amount: 900, kind: 'out', category: 'Transport', walletId: 'w3', toWalletId: '', createdAt: at },
-    { id: uid(), date: addDays(-2), desc: 'Top up bKash', amount: 5000, kind: 'move', category: '', walletId: 'w1', toWalletId: 'w2', createdAt: at },
+    T(0, 'out', 'Bike', 1150, 'w2', 'Grip', ['bike']), T(0, 'out', 'Bike', 50, 'w3', 'Grip setup', ['bike']), T(0, 'out', 'Bazaar', 940, 'w3', 'Weekly vegetables'), T(0, 'out', 'Cafe', 20, 'w3', 'Tea'),
+    T(-1, 'out', 'Office meal', 180, 'w3'), T(-1, 'out', 'Recharge', 299, 'w2', 'Internet pack'), T(-2, 'out', 'Fruits', 360, 'w3'), T(-3, 'out', 'Transport', 900, 'w3', 'Rickshaw & CNG'),
+    T(-4, 'out', 'Internet', 1500, 'w2', 'Home WiFi'), T(-6, 'out', 'Bazaar', 6500, 'w1', 'Monthly groceries'), T(-8, 'out', 'Medicine', 640, 'w3'), T(-10, 'out', 'Electricity', 1850, 'w2'),
+    T(-12, 'out', 'Baby', 2200, 'w1', 'Clothes'), T(-15, 'out', 'Rent', 18000, 'w1'), T(-15, 'in', 'Salary', 120000, 'w1', 'Monthly salary'), T(-5, 'in', 'Outsourcing', 15000, 'w2', 'Landing page'),
+    { id: uid(), date: addDays(-2), desc: 'Top up bKash', amount: 5000, kind: 'move', category: '', walletId: 'w1', toWalletId: 'w2', createdAt: at, categoryId: '', tags: [] },
   ];
+  db.categories = defaultCategories(db.txns);
   const b1 = uid();
   db.budgets = [{ id: b1, name: 'Gadgets', order: 0 }];
   db.budgetLines = [{ id: uid(), budgetId: b1, label: 'Laptop', amount: '120k', order: 0 }, { id: uid(), budgetId: b1, label: 'Mobile', amount: '110k', order: 1 }];

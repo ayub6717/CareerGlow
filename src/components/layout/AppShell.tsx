@@ -8,7 +8,13 @@ import Overview from '../../features/overview/Overview';
 import Goals from '../../features/goals/Goals';
 import GoalDetail from '../../features/goals/GoalDetail';
 import Tasks from '../../features/tasks/Tasks';
-import Wallets from '../../features/money/Wallets';
+import Spending from '../../features/money/Spending';
+import TxnForm from '../../features/money/TxnForm';
+import CategoryTxns from '../../features/money/CategoryTxns';
+import Categories from '../../features/money/Categories';
+import Accounts, { AccountForm } from '../../features/money/Accounts';
+import Transfers, { TransferForm } from '../../features/money/Transfers';
+import Plan from '../../features/money/Plan';
 import Budget from '../../features/money/Budget';
 import Reminders from '../../features/reminders/Reminders';
 import Jobs from '../../features/career/Jobs';
@@ -17,11 +23,18 @@ import Content from '../../features/content/Content';
 import Review from '../../features/review/Review';
 
 const TITLES: Record<View, string> = {
-  overview: 'Overview', goals: 'Goals & Plans', goal: 'Goal', tasks: 'Tasks', wallets: 'Wallets & Spending', budget: 'Budget Calculator',
+  overview: 'Overview', goals: 'Goals & Plans', goal: 'Goal', tasks: 'Tasks', wallets: 'Spending', budget: 'Budget Calculator',
   reminders: 'Reminders', jobs: 'Job Applications', skills: 'Skills & Learning', content: 'Content', review: 'Review',
+  money: 'Spending', 'money-cat': 'Transactions', 'money-add': 'Add transaction', 'money-edit': 'Edit transaction', categories: 'Categories',
+  accounts: 'Accounts', account: 'Account', transfers: 'Transfer history', transfer: 'Transfer', plan: 'Monthly plan',
 };
 type Group = 'money' | 'career';
-const GROUP_OF: Partial<Record<View, Group>> = { wallets: 'money', budget: 'money', jobs: 'career', skills: 'career' };
+const GROUP_OF: Partial<Record<View, Group>> = {
+  money: 'money', 'money-cat': 'money', 'money-add': 'money', 'money-edit': 'money', categories: 'money', accounts: 'money', account: 'money',
+  transfers: 'money', transfer: 'money', plan: 'money', budget: 'money', jobs: 'career', skills: 'career',
+};
+/** Detail screens highlight their parent in the menu. */
+const PARENT: Partial<Record<View, View>> = { goal: 'goals', 'money-cat': 'money', 'money-add': 'money', 'money-edit': 'money', account: 'accounts', transfer: 'transfers' };
 
 /** onDisconnect is omitted in service-account mode, where there is no sign-in to leave. */
 export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boolean) => void }) {
@@ -29,7 +42,7 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
   const { view, param } = useRoute();
   const [menu, setMenu] = useState(false);
   const [open, setOpen] = useState<Record<Group, boolean>>({ money: true, career: true });
-  const active: View = view === 'goal' ? 'goals' : view;
+  const active: View = PARENT[view] ?? view;
   const group = GROUP_OF[active];
 
   useEffect(() => { setMenu(false); }, [view]);
@@ -73,7 +86,7 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
       <NavItem v="goals" icon="target">Goals &amp; Plans</NavItem>
       <NavItem v="tasks" icon="check">Tasks</NavItem>
       <GroupHead g="money" icon="wallet" label="Money" />
-      {open.money && <Sub><NavItem v="wallets" sub>Wallets &amp; Spending</NavItem><NavItem v="budget" sub>Budget Calculator</NavItem></Sub>}
+      {open.money && <Sub><NavItem v="money" sub>Spending</NavItem><NavItem v="accounts" sub>Accounts</NavItem><NavItem v="transfers" sub>Transfers</NavItem><NavItem v="categories" sub>Categories</NavItem><NavItem v="budget" sub>Budget Calculator</NavItem><NavItem v="plan" sub>Monthly plan</NavItem></Sub>}
       <NavItem v="reminders" icon="bell">Reminders</NavItem>
       <GroupHead g="career" icon="briefcase" label="Career" />
       {open.career && <Sub><NavItem v="jobs" sub>Job Applications</NavItem><NavItem v="skills" sub>Skills &amp; Learning</NavItem></Sub>}
@@ -87,7 +100,16 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
       case 'goals': return <Goals />;
       case 'goal': return <GoalDetail id={param} />;
       case 'tasks': return <Tasks />;
-      case 'wallets': return <Wallets />;
+      case 'money': return <Spending />;
+      case 'money-add': return <TxnForm key={`a${param}`} param={param} />;
+      case 'money-edit': return <TxnForm key={`e${param}`} param={param} edit />;
+      case 'money-cat': return <CategoryTxns key={param} id={param} />;
+      case 'categories': return <Categories />;
+      case 'accounts': return <Accounts />;
+      case 'account': return <AccountForm key={param} id={param} />;
+      case 'transfers': return <Transfers />;
+      case 'transfer': return <TransferForm key={param} id={param} />;
+      case 'plan': return <Plan />;
       case 'budget': return <Budget />;
       case 'reminders': return <Reminders />;
       case 'jobs': return <Jobs />;
@@ -108,7 +130,7 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
         {navList}
         <div className="mt-auto flex flex-col gap-2">
           <StorageBox onDisconnect={onDisconnect} />
-          {fin.income === 0 && db.plannedExpenses.length === 0 && <button className="text-left text-[13px] text-pri-ink underline-offset-2 hover:underline" onClick={() => go('wallets')}>Set your monthly plan →</button>}
+          {fin.income === 0 && db.plannedExpenses.length === 0 && <button className="text-left text-[13px] text-pri-ink underline-offset-2 hover:underline" onClick={() => go('plan')}>Set your monthly plan →</button>}
         </div>
       </aside>
 
@@ -139,7 +161,7 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
       <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-white/95 px-1.5 pt-1.5 pb-[calc(6px+env(safe-area-inset-bottom))] backdrop-blur-md md:hidden" aria-label="Quick navigation">
         <Tab on={active === 'overview'} icon="home" label="Home" onClick={() => go('overview')} />
         <Tab on={active === 'goals'} icon="target" label="Goals" onClick={() => go('goals')} />
-        <Tab on={group === 'money'} icon="wallet" label="Money" onClick={() => go('wallets')} />
+        <Tab on={group === 'money'} icon="wallet" label="Money" onClick={() => go('money')} />
         <Tab on={group === 'career'} icon="briefcase" label="Career" onClick={() => go('jobs')} />
         <Tab on={menu || ['tasks', 'reminders', 'content', 'review'].includes(active)} icon="menu" label="More" onClick={() => setMenu(true)} />
       </nav>

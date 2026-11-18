@@ -42,14 +42,15 @@ export const SCHEMA: Schema = {
       hours: 'number', dependsOn: 'string', blocked: 'boolean', doneAt: 'string', createdAt: 'string',
     },
   },
-  wallets: { sheet: 'Wallets', fields: { id: 'string', name: 'string', kind: 'string', opening: 'number', order: 'number' } },
+  wallets: { sheet: 'Wallets', fields: { id: 'string', name: 'string', kind: 'string', opening: 'number', order: 'number', icon: 'string', color: 'string', hidden: 'boolean' } },
   txns: {
     sheet: 'Transactions',
     fields: {
       id: 'string', date: 'string', desc: 'string', amount: 'number', kind: 'string', category: 'string',
-      walletId: 'string', toWalletId: 'string', createdAt: 'string',
+      walletId: 'string', toWalletId: 'string', createdAt: 'string', categoryId: 'string', tags: 'ids',
     },
   },
+  categories: { sheet: 'Categories', fields: { id: 'string', name: 'string', kind: 'string', icon: 'string', color: 'string', order: 'number' } },
   budgets: { sheet: 'Budgets', fields: { id: 'string', name: 'string', order: 'number' }, cascade: [{ table: 'budgetLines', key: 'budgetId' }] },
   budgetLines: { sheet: 'Budget Lines', fields: { id: 'string', budgetId: 'string', label: 'string', amount: 'string', order: 'number' } },
   reminders: {

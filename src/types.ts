@@ -34,10 +34,15 @@ export interface Task {
   id: string; title: string; goalId: string; status: TaskStatus; priority: Priority; due: string;
   hours: number; dependsOn: string; blocked: boolean; doneAt: string; createdAt: string;
 }
-export interface Wallet { id: string; name: string; kind: WalletKind; opening: number; order: number }
+/** An account (bank, bKash, cash…). `hidden` = not counted in the total balance. */
+export interface Wallet { id: string; name: string; kind: WalletKind; opening: number; order: number; icon: string; color: string; hidden: boolean }
+export type CatKind = 'out' | 'in';
+export interface Category { id: string; name: string; kind: CatKind; icon: string; color: string; order: number }
 export interface Txn {
   id: string; date: string; desc: string; amount: number; kind: TxnKind; category: string;
   walletId: string; toWalletId: string; createdAt: string;
+  /** Categories.id — `category` keeps the name too so the sheet stays readable */
+  categoryId: string; tags: string[];
 }
 export interface Budget { id: string; name: string; order: number }
 export interface BudgetLine { id: string; budgetId: string; label: string; amount: string; order: number }
@@ -67,6 +72,7 @@ export interface Tables {
   tasks: Task;
   wallets: Wallet;
   txns: Txn;
+  categories: Category;
   budgets: Budget;
   budgetLines: BudgetLine;
   reminders: Reminder;
@@ -84,4 +90,5 @@ export type DB = { [K in TableName]: Tables[K][] };
 
 export type View =
   | 'overview' | 'goals' | 'goal' | 'tasks' | 'wallets' | 'budget' | 'reminders'
+  | 'money' | 'money-cat' | 'money-add' | 'money-edit' | 'categories' | 'accounts' | 'account' | 'transfers' | 'transfer' | 'plan'
   | 'jobs' | 'skills' | 'content' | 'review';

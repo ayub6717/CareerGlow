@@ -18,8 +18,9 @@ Values are written in RAW mode, so text that starts with `=` is stored as text, 
 | Goal Deposits | id, goalId, date, amount | `goalId` → Goals.id |
 | Time Log | id, goalId, date, hours | `goalId` → Goals.id |
 | Tasks | id, title, goalId, status, priority, due, hours, dependsOn, blocked, doneAt, createdAt | `goalId` → Goals.id, `dependsOn` → Tasks.id |
-| Wallets | id, name, kind, opening, order | — |
-| Transactions | id, date, desc, amount, kind, category, walletId, toWalletId, createdAt | `kind` ∈ out, in, move. `walletId`/`toWalletId` → Wallets.id |
+| Wallets (accounts) | id, name, kind, opening, order, icon, color, hidden | `hidden` = TRUE → not counted in the total balance. `icon` is an icon name from `src/lib/icon-set.ts` |
+| Transactions | id, date, desc, amount, kind, category, walletId, toWalletId, createdAt, categoryId, tags | `kind` ∈ out, in, move (transfer). `walletId`/`toWalletId` → Wallets.id. `categoryId` → Categories.id (`category` keeps the name). `desc` is the comment. `tags` = comma-separated |
+| Categories | id, name, kind, icon, color, order | `kind` ∈ out (expense), in (income). Filled with defaults the first time the Money section opens |
 | Budgets | id, name, order | — |
 | Budget Lines | id, budgetId, label, amount, order | `budgetId` → Budgets.id. `amount` is text such as `120k` |
 | Reminders | id, title, date, kind, repeat, amount, walletId, leadDays, lastDone, done | `repeat` ∈ none, monthly, yearly |

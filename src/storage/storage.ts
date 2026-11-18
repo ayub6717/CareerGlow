@@ -12,6 +12,8 @@ export interface StorageService {
   loadAll(): Promise<LoadResult>;
   /** Insert, or update if a row with this id already exists (prevents duplicates on retries). */
   upsert<T extends TableName>(table: T, rec: Tables[T]): Promise<void>;
+  /** Same as upsert for many rows of one table; new rows are appended in a single request. */
+  upsertMany<T extends TableName>(table: T, recs: Tables[T][]): Promise<void>;
   /** Delete rows by id across one or more tables in a single request. */
   remove(items: { table: TableName; ids: string[] }[]): Promise<void>;
   openUrl?: string;
@@ -28,6 +30,7 @@ export class DemoStorage implements StorageService {
   constructor(seed: DB) { this.seed = seed; }
   async loadAll(): Promise<LoadResult> { return { db: structuredClone(this.seed), warnings: [] }; }
   async upsert(): Promise<void> { /* in-memory only */ }
+  async upsertMany(): Promise<void> { /* in-memory only */ }
   async remove(): Promise<void> { /* in-memory only */ }
 }
 
@@ -207,6 +210,17 @@ export class GoogleSheetsStorage implements StorageService {
       const range = `${q(SCHEMA[t].sheet)}!A1`;
       await call(this.auth, `${this.api}/${this.id}/values/${encodeURIComponent(range)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, { method: 'POST', body: JSON.stringify({ values }) });
     }
+  }
+
+  async upsertMany<T extends TableName>(t: T, recs: Tables[T][]): Promise<void> {
+    if (!recs.length) return;
+    if (!this.heads.size) await this.ensureSchema();
+    const found = await this.rowsOf(t, recs.map((r) => r.id));
+    const fresh = recs.filter((r) => !found.get(r.id)?.length);
+    for (const r of recs) if (found.get(r.id)?.length) await this.upsert(t, r);
+    if (!fresh.length) return;
+    const range = `${q(SCHEMA[t].sheet)}!A1`;
+    await call(this.auth, `${this.api}/${this.id}/values/${encodeURIComponent(range)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, { method: 'POST', body: JSON.stringify({ values: fresh.map((r) => this.aligned(t, r)) }) });
   }
 
   async remove(items: { table: TableName; ids: string[] }[]): Promise<void> {

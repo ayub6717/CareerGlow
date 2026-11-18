@@ -3,7 +3,7 @@ import type { DB, TableName, Tables } from '../types';
 import { SCHEMA, emptyDB } from './schema';
 import type { StorageService } from './storage';
 
-type Op = { kind: 'upsert'; table: TableName; id: string } | { kind: 'remove'; items: { table: TableName; ids: string[] }[] };
+type Op = { kind: 'upsert'; table: TableName; id: string } | { kind: 'upsertMany'; table: TableName; ids: string[] } | { kind: 'remove'; items: { table: TableName; ids: string[] }[] };
 export type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 export interface Toast { id: number; text: string; tone: 'ok' | 'error' }
 
@@ -67,6 +67,9 @@ export function DataProvider({ storage, children }: { storage: StorageService; c
         if (op.kind === 'upsert') {
           const rec = (dbRef.current[op.table] as { id: string }[]).find((r) => r.id === op.id);
           if (rec) await storage.upsert(op.table, rec as never); // read latest at run time → coalesces fast edits
+        } else if (op.kind === 'upsertMany') {
+          const recs = (dbRef.current[op.table] as { id: string }[]).filter((r) => op.ids.includes(r.id));
+          await storage.upsertMany(op.table, recs as never[]);
         } else {
           await storage.remove(op.items);
         }
@@ -148,7 +151,8 @@ export function DataProvider({ storage, children }: { storage: StorageService; c
     const fresh = list.filter((r) => !cur.some((c) => c.id === r.id)); // no duplicate ids locally
     if (!fresh.length) return;
     commit({ ...dbRef.current, [table]: [...cur, ...fresh] } as DB);
-    fresh.forEach((r, i) => run({ kind: 'upsert', table, id: r.id }, i === fresh.length - 1 ? toast : undefined));
+    if (fresh.length > 1) run({ kind: 'upsertMany', table, ids: fresh.map((r) => r.id) }, toast); // one request for the batch
+    else run({ kind: 'upsert', table, id: fresh[0].id }, toast);
   }, [run]);
 
   const update: Ctx['update'] = useCallback((table, id, patch, opts) => {
