@@ -222,8 +222,22 @@
   background: #5fae8c url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat;
   border-color: #5fae8c;
 }
-.note-body table { border-collapse: collapse; margin: 0.6em 0; min-width: 40%; max-width: 100%; }
-.note-body th, .note-body td { border: 1px solid var(--color-line); padding: 6px 10px; min-width: 70px; vertical-align: top; text-align: left; }
+/* Tables size to their content like a spreadsheet and scroll sideways when wider than the page */
+.note-body table { display: block; width: max-content; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 1.3em 0 1.4em; }
+.note-body th, .note-body td { border: 1px solid var(--color-line); padding: 6px 10px; min-width: 60px; vertical-align: top; text-align: left; white-space: nowrap; overflow-wrap: normal; word-break: normal; }
+/* "Wrap text" turned on for a table: long cells wrap at word boundaries instead of growing wider */
+.note-body table[data-wrap='true'] th, .note-body table[data-wrap='true'] td { white-space: normal; max-width: 360px; overflow-wrap: break-word; }
 .note-body th { background: var(--color-line-soft); font-weight: 600; }
-.note-body [data-cur] { outline: 2px solid #b9c9f1; outline-offset: -2px; }
-@media (max-width: 767px) { .note-body { overflow-x: auto; } }
+.note-body sup, .note-body sub { font-size: 0.72em; }
+
+/* Round tick — click to mark done */
+.note-body [data-tick] {
+  display: inline-block; width: 1.05em; height: 1.05em; margin-right: 0.3em; vertical-align: -0.16em;
+  border: 1.6px solid #9aa5b4; border-radius: 999px; background: white; cursor: pointer; user-select: none;
+  transition: background-color .15s, border-color .15s;
+}
+.note-body [data-tick]:hover { border-color: #5fae8c; }
+.note-body [data-tick='true'] {
+  border-color: #3f9f74;
+  background: #3f9f74 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath d='M5.5 12.5l4 4L18.5 7.5' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 78% no-repeat;
+}

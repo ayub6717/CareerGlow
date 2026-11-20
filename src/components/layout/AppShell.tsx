@@ -219,9 +219,9 @@ function StorageBox({ onDisconnect }: { onDisconnect?: (forget: boolean) => void
   const { storage, reload } = useData();
   return (
     <div className="rounded-xl bg-bg p-3 text-[13px] text-mute">
-      <div className="mb-1.5 flex items-center gap-2 font-semibold text-ink"><Icon name="sheet" size={16} />{storage.kind === 'google' ? storage.label : 'Demo mode'}</div>
+      {storage.kind === 'demo' && <div className="mb-1.5 flex items-center gap-2 font-semibold text-ink"><Icon name="sheet" size={16} />Demo mode</div>}
       <div className="flex flex-wrap gap-x-3 gap-y-1">
-        {storage.openUrl && <a href={storage.openUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-8 items-center text-pri-ink hover:underline">Open sheet</a>}
+        {storage.openUrl && <a href={storage.openUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-8 items-center gap-1.5 text-pri-ink hover:underline"><Icon name="sheet" size={15} />Open sheet</a>}
         {storage.kind === 'google' && <button className="min-h-8 hover:text-ink" onClick={() => void reload()}>Refresh</button>}
         {onDisconnect && <button className="min-h-8 hover:text-ink" onClick={() => onDisconnect(false)}>{storage.kind === 'google' ? 'Sign out' : 'Exit demo'}</button>}
         {onDisconnect && storage.kind === 'google' && <button className="min-h-8 hover:text-ink" onClick={() => onDisconnect(true)}>Switch sheet</button>}
