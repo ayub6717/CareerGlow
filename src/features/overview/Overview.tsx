@@ -92,7 +92,7 @@ export default function Overview() {
         {focus.length ? (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3">
             {focus.slice(0, 3).map(({ g, c }) => (
-              <button key={g.id} onClick={() => go('goal', g.id)} className="flex flex-col gap-2.5 rounded-[14px] border border-line bg-white p-4 text-left hover:border-[#c3d0f0]">
+              <button key={g.id} onClick={() => go('goal', g.id)} className="flex flex-col gap-2.5 rounded-[14px] border border-line bg-card p-4 text-left hover:border-pri-line">
                 <span className="flex items-start justify-between gap-2"><span className="wrap-any font-semibold">{g.name}</span><Pill tone={KIND_TONE[c.kind]}>{c.status}</Pill></span>
                 <Bar pct={c.pct} color={AREA_COLOR[g.area]} />
                 <span className="wrap-any text-[13px] text-mute">Next: {c.next}</span>

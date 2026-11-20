@@ -101,7 +101,7 @@ export function AccountForm({ id }: { id: string }) {
         </label>
         <IconColorPicker icon={d.icon} color={d.color} onIcon={(i) => setD({ ...d, icon: i })} onColor={(c) => setD({ ...d, color: c })} groups={['Money', 'Home', 'Transport', 'Family', 'Fun']} />
         {err && <p className="text-[14px] text-rose-ink" role="alert">{err}</p>}
-        <div className="sticky bottom-[calc(72px+env(safe-area-inset-bottom))] z-10 -mx-1 flex items-center gap-2 bg-white/90 px-1 py-1 backdrop-blur-sm md:bottom-2">
+        <div className="sticky bottom-[calc(72px+env(safe-area-inset-bottom))] z-10 -mx-1 flex items-center gap-2 bg-card/90 px-1 py-1 backdrop-blur-sm md:bottom-2">
           <button type="button" className="btn btn-primary min-h-12 flex-1 text-[17px]" onClick={save}>{existing ? 'Save' : 'Add account'}</button>
           {existing && <ConfirmButton confirmText="Tap again — removes its transactions too" onConfirm={() => {
             db.txns.filter((t) => t.walletId === existing.id || t.toWalletId === existing.id).forEach((t) => remove('txns', t.id));

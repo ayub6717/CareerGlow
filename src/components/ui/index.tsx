@@ -33,6 +33,9 @@ const PATHS: Record<string, ReactNode> = {
   download: <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14" />,
   eyeoff: <><path d="M3.5 12s3-6 8.5-6c1.6 0 3 .5 4.2 1.2M20.5 12s-3 6-8.5 6c-1.6 0-3-.5-4.2-1.2" /><path d="M10 10a2.8 2.8 0 0 0 4 4M4 4l16 16" /></>,
   tag: <><path d="M4 12.6V5a1 1 0 0 1 1-1h7.6l7.4 7.4-8.6 8.6z" /><circle cx="8.5" cy="8.5" r="1.3" /></>,
+  sun: <><circle cx="12" cy="12" r="4" /><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" /></>,
+  moon: <path d="M19.5 14.5A7.5 7.5 0 0 1 9.5 4.5a7.5 7.5 0 1 0 10 10z" />,
+  monitor: <><rect x="3.5" y="4.5" width="17" height="11.5" rx="2" /><path d="M9 20h6M12 16v4" /></>,
   chevronsLeft: <path d="M11.5 7l-5 5 5 5M18 7l-5 5 5 5" />,
   chevronsRight: <path d="M12.5 7l5 5-5 5M6 7l5 5-5 5" />,
   collapse: <><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" /><path d="M9 4.5v15M15.5 9.5L13 12l2.5 2.5" /></>,
@@ -51,7 +54,7 @@ export function Icon({ name, size = 20, className = '', fill = 'none' }: { name:
 
 // ---------- Badges & progress ----------
 const TONES: Record<Tone, string> = {
-  blue: 'bg-[#e8eefb] text-pri-ink', mint: 'bg-mint-soft text-mint-ink', amber: 'bg-amber-soft text-amber-ink',
+  blue: 'bg-pri-tint2 text-pri-ink', mint: 'bg-mint-soft text-mint-ink', amber: 'bg-amber-soft text-amber-ink',
   rose: 'bg-rose-soft text-rose-ink', lav: 'bg-lav-soft text-lav-ink', gray: 'bg-gray-soft text-gray-ink', teal: 'bg-teal-soft text-teal-ink',
 };
 export function Pill({ tone = 'gray', children, className = '' }: { tone?: Tone; children: ReactNode; className?: string }) {
@@ -84,7 +87,7 @@ export function Card({ children, className = '', as: As = 'section' }: { childre
 }
 export function Stat({ label, value, sub, valueClass = '', className = '' }: { label: ReactNode; value: ReactNode; sub?: ReactNode; valueClass?: string; className?: string }) {
   return (
-    <div className={`min-w-0 rounded-[14px] border border-line bg-white px-4 py-3.5 shadow-[var(--shadow-card)] max-md:px-3.5 max-md:py-3 ${className}`}>
+    <div className={`min-w-0 rounded-[14px] border border-line bg-card px-4 py-3.5 shadow-[var(--shadow-card)] max-md:px-3.5 max-md:py-3 ${className}`}>
       <div className="lbl">{label}</div>
       <div className={`mt-1 text-[22px] font-medium wrap-any max-md:text-[19px] ${valueClass}`}>{value}</div>
       {sub != null && sub !== '' && <div className="mt-0.5 text-[13px] text-mute">{sub}</div>}

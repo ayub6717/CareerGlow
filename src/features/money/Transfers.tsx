@@ -103,7 +103,7 @@ export function TransferForm({ id }: { id: string }) {
         </div>
         <label className="flex flex-col gap-1.5"><span className="lbl">Comment</span><input className="input" placeholder="Comment" value={d.desc} onChange={(e) => setD({ ...d, desc: e.target.value })} onKeyDown={(e) => e.key === 'Enter' && save()} /></label>
         {err && <p className="text-[14px] text-rose-ink" role="alert">{err}</p>}
-        <div className="sticky bottom-[calc(72px+env(safe-area-inset-bottom))] z-10 -mx-1 flex items-center gap-2 bg-white/90 px-1 py-1 backdrop-blur-sm md:bottom-2">
+        <div className="sticky bottom-[calc(72px+env(safe-area-inset-bottom))] z-10 -mx-1 flex items-center gap-2 bg-card/90 px-1 py-1 backdrop-blur-sm md:bottom-2">
           <button type="button" className="btn btn-primary min-h-12 flex-1 text-[17px]" onClick={save}>{existing ? 'Save' : 'Add'}</button>
           {existing && <ConfirmButton onConfirm={() => { remove('txns', existing.id, 'Transfer deleted'); done(); }}>Delete</ConfirmButton>}
         </div>

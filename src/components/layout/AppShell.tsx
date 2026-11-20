@@ -3,6 +3,7 @@ import { useData } from '../../storage/DataContext';
 import { go, useRoute } from '../../router';
 import type { View } from '../../types';
 import { Icon } from '../ui';
+import { useTheme, type ThemePref } from '../../lib/theme';
 import { finance, reminderInfo } from '../../lib/calc';
 import Overview from '../../features/overview/Overview';
 import Goals from '../../features/goals/Goals';
@@ -128,10 +129,11 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
   return (
     <div className="flex min-h-dvh">
       {/* Desktop sidebar */}
-      <aside className="sticky top-0 hidden h-dvh w-[252px] shrink-0 flex-col gap-5 overflow-y-auto border-r border-line bg-white px-3.5 py-5 md:flex" aria-label="Main navigation">
+      <aside className="sticky top-0 hidden h-dvh w-[252px] shrink-0 flex-col gap-5 overflow-y-auto border-r border-line bg-card px-3.5 py-5 md:flex" aria-label="Main navigation">
         <Brand />
         {navList}
         <div className="mt-auto flex flex-col gap-2">
+          <ThemeSwitch />
           <StorageBox onDisconnect={onDisconnect} />
           {fin.income === 0 && db.plannedExpenses.length === 0 && <button className="text-left text-[13px] text-pri-ink underline-offset-2 hover:underline" onClick={() => go('plan')}>Set your monthly plan →</button>}
         </div>
@@ -139,12 +141,12 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
 
       <div className="min-w-0 flex-1">
         {/* Mobile top bar */}
-        <header className="sticky top-0 z-20 flex items-center justify-between gap-2.5 border-b border-line bg-white/95 py-2 pl-4 pr-2 pt-[calc(8px+env(safe-area-inset-top))] backdrop-blur-md md:hidden">
+        <header className="sticky top-0 z-20 flex items-center justify-between gap-2.5 border-b border-line bg-card/95 py-2 pl-4 pr-2 pt-[calc(8px+env(safe-area-inset-top))] backdrop-blur-md md:hidden">
           <div className="flex min-w-0 items-center gap-2.5">
             <img src="/lifenest-logo.svg" alt="" className="size-7" />
             <div className="min-w-0"><div className="text-[12px] leading-none text-mute">Lifenest</div><div className="truncate text-[17px] font-semibold leading-tight">{TITLES[view]}</div></div>
           </div>
-          <div className="flex items-center"><SaveDot />{badge > 0 && <button className="icon-btn relative" aria-label={`${badge} reminders due`} onClick={() => go('reminders')}><Icon name="bell" size={22} /><span className="absolute right-2.5 top-2.5 size-2.5 rounded-full border-2 border-white bg-amber" /></button>}</div>
+          <div className="flex items-center"><SaveDot />{badge > 0 && <button className="icon-btn relative" aria-label={`${badge} reminders due`} onClick={() => go('reminders')}><Icon name="bell" size={22} /><span className="absolute right-2.5 top-2.5 size-2.5 rounded-full border-2 border-card bg-amber" /></button>}</div>
         </header>
 
         <main className={`mx-auto flex ${view === 'notes' ? 'max-w-[1480px]' : 'max-w-[1080px]'} flex-col gap-5 px-8 pb-16 pt-7 max-md:gap-4 max-md:px-4 max-md:pb-[calc(96px+env(safe-area-inset-bottom))] max-md:pt-3.5`}>
@@ -161,7 +163,7 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
       </div>
 
       {/* Mobile bottom tab bar */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-white/95 px-1.5 pt-1.5 pb-[calc(6px+env(safe-area-inset-bottom))] backdrop-blur-md md:hidden" aria-label="Quick navigation">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-card/95 px-1.5 pt-1.5 pb-[calc(6px+env(safe-area-inset-bottom))] backdrop-blur-md md:hidden" aria-label="Quick navigation">
         <Tab on={active === 'overview'} icon="home" label="Home" onClick={() => go('overview')} />
         <Tab on={active === 'goals'} icon="target" label="Goals" onClick={() => go('goals')} />
         <Tab on={group === 'money'} icon="wallet" label="Money" onClick={() => go('money')} />
@@ -170,11 +172,11 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
       </nav>
 
       {menu && (
-        <div className="fixed inset-0 z-50 flex items-end bg-ink/25 md:hidden" onClick={() => setMenu(false)}>
-          <div role="dialog" aria-label="All sections" className="max-h-[86dvh] w-full overflow-y-auto rounded-t-[20px] bg-white px-3.5 pt-2.5 pb-[calc(16px+env(safe-area-inset-bottom))]" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-end bg-black/40 md:hidden" onClick={() => setMenu(false)}>
+          <div role="dialog" aria-label="All sections" className="max-h-[86dvh] w-full overflow-y-auto rounded-t-[20px] bg-card px-3.5 pt-2.5 pb-[calc(16px+env(safe-area-inset-bottom))]" onClick={(e) => e.stopPropagation()}>
             <div className="mx-auto mb-3 mt-1 h-[5px] w-10 rounded-full bg-line" />
             {navList}
-            <div className="mt-3 border-t border-line-soft pt-3"><StorageBox onDisconnect={onDisconnect} /></div>
+            <div className="mt-3 flex flex-col gap-2 border-t border-line-soft pt-3"><ThemeSwitch /><StorageBox onDisconnect={onDisconnect} /></div>
           </div>
         </div>
       )}
@@ -215,6 +217,22 @@ function SaveDot() {
   return <span className="mr-2 flex items-center gap-1.5 text-[12px] text-mute" role="status">{save.state === 'saving' ? <><span className="size-3 animate-spin rounded-full border-2 border-pri-soft border-t-pri" />Saving</> : <><span className="size-2 rounded-full bg-mint" />Saved</>}</span>;
 }
 
+/** Light / Dark / Auto (follows the device). */
+function ThemeSwitch() {
+  const [pref, setPref] = useTheme();
+  const opts: { v: ThemePref; icon: string; label: string }[] = [{ v: 'light', icon: 'sun', label: 'Light' }, { v: 'dark', icon: 'moon', label: 'Dark' }, { v: 'system', icon: 'monitor', label: 'Auto' }];
+  return (
+    <div className="grid grid-cols-3 gap-1 rounded-xl bg-bg p-1" role="radiogroup" aria-label="Appearance">
+      {opts.map((o) => (
+        <button key={o.v} type="button" role="radio" aria-checked={pref === o.v} onClick={() => setPref(o.v)} title={o.v === 'system' ? 'Follow your device setting' : `${o.label} mode`}
+          className={`flex min-h-9 items-center justify-center gap-1.5 rounded-[9px] text-[13px] font-medium transition-colors ${pref === o.v ? 'bg-card text-pri-ink shadow-[var(--shadow-card)]' : 'text-mute hover:text-ink'}`}>
+          <Icon name={o.icon} size={15} />{o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function StorageBox({ onDisconnect }: { onDisconnect?: (forget: boolean) => void }) {
   const { storage, reload } = useData();
   return (
@@ -235,7 +253,7 @@ function Toasts() {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-[calc(76px+env(safe-area-inset-bottom))] z-40 flex flex-col items-center gap-2 px-4 md:bottom-6" aria-live="polite">
       {toasts.map((t) => (
-        <div key={t.id} className={`pointer-events-auto max-w-[420px] rounded-xl px-4 py-2.5 text-[14px] shadow-[0_6px_24px_rgba(31,45,61,.12)] ${t.tone === 'error' ? 'bg-rose-soft text-rose-ink' : 'bg-white text-ink border border-line'}`}>{t.text}</div>
+        <div key={t.id} className={`pointer-events-auto max-w-[420px] rounded-xl px-4 py-2.5 text-[14px] shadow-pop ${t.tone === 'error' ? 'bg-rose-soft text-rose-ink' : 'bg-card text-ink border border-line'}`}>{t.text}</div>
       ))}
     </div>
   );

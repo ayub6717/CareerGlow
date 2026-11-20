@@ -90,7 +90,7 @@ export default function TxnForm({ param, edit }: { param: string; edit?: boolean
             {top.map((c) => (
               <button key={c.id} type="button" onClick={() => setD({ ...d, categoryId: c.id })} aria-pressed={d.categoryId === c.id}
                 className="group flex min-w-0 flex-col items-center gap-1.5 rounded-xl py-1.5">
-                <Bubble icon={c.icon} color={c.color} size={52} className={`transition-transform ${d.categoryId === c.id ? 'scale-105 ring-[3px] ring-offset-2 ring-[#b9c9f1]' : d.categoryId ? 'opacity-55 group-hover:opacity-100' : ''}`} />
+                <Bubble icon={c.icon} color={c.color} size={52} className={`transition-transform ${d.categoryId === c.id ? 'scale-105 ring-[3px] ring-offset-2 ring-offset-card ring-focus' : d.categoryId ? 'opacity-55 group-hover:opacity-100' : ''}`} />
                 <span className={`w-full truncate text-center text-[13px] ${d.categoryId === c.id ? 'font-semibold text-ink' : 'text-mute'}`}>{c.name}</span>
               </button>
             ))}
@@ -120,7 +120,7 @@ export default function TxnForm({ param, edit }: { param: string; edit?: boolean
           <div className="flex flex-wrap items-center gap-2">
             {d.tags.map((t) => (
               <span key={t} className="inline-flex min-h-9 items-center gap-1 rounded-full bg-mint-soft pl-3 pr-1 text-[14px] text-mint-ink">#{t}
-                <button type="button" className="grid size-7 place-items-center rounded-full hover:bg-white/60" aria-label={`Remove tag ${t}`} onClick={() => setD({ ...d, tags: d.tags.filter((x) => x !== t) })}><Icon name="x" size={14} /></button>
+                <button type="button" className="grid size-7 place-items-center rounded-full hover:bg-card/60" aria-label={`Remove tag ${t}`} onClick={() => setD({ ...d, tags: d.tags.filter((x) => x !== t) })}><Icon name="x" size={14} /></button>
               </span>
             ))}
             {!tagOpen && <button type="button" className="chip !border-mint !text-mint-ink" onClick={() => setTagOpen(true)}><Icon name="plus" size={16} />Add tag</button>}
@@ -141,7 +141,7 @@ export default function TxnForm({ param, edit }: { param: string; edit?: boolean
         </label>
 
         {err && <p className="text-[14px] text-rose-ink" role="alert">{err}</p>}
-        <div className="sticky bottom-[calc(72px+env(safe-area-inset-bottom))] z-10 -mx-1 flex items-center gap-2 bg-white/90 px-1 py-1 backdrop-blur-sm md:bottom-2">
+        <div className="sticky bottom-[calc(72px+env(safe-area-inset-bottom))] z-10 -mx-1 flex items-center gap-2 bg-card/90 px-1 py-1 backdrop-blur-sm md:bottom-2">
           <button type="button" className="btn btn-primary min-h-12 flex-1 text-[17px]" onClick={save}>{existing ? 'Save' : 'Add'}</button>
           {existing && <ConfirmButton onConfirm={() => { remove('txns', existing.id, 'Deleted'); done(); }}>Delete</ConfirmButton>}
         </div>

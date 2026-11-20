@@ -70,7 +70,7 @@ export default function Goals() {
     <div className="flex flex-col gap-[18px]">
       <PageHeader eyebrow="Goal → Milestone → Task" title="Goals & Plans" actions={<button className="btn btn-ghost" onClick={addBlank}>+ Blank goal</button>} />
 
-      <Card className="flex flex-col gap-3.5 !border-[#e4def6] !bg-[#f5f2fc]">
+      <Card className="flex flex-col gap-3.5 !border-lav-line !bg-lav-tint">
         <div><h2 className="h2">Plan assistant</h2><p className="mt-1 text-[14px] text-mute">Describe a plan in plain words — English or বাংলা. Every number is calculated, nothing is guessed.</p></div>
         <textarea className="input" value={text} onChange={(e) => setText(e.target.value)} aria-label="Describe your plan" placeholder="e.g. Buy a car for 18 lakh in 18 months, income is irregular" />
         <div><button className="btn btn-primary" onClick={() => text.trim() && setDraft(parsePlan(text))}>Build the plan</button></div>

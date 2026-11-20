@@ -30,7 +30,7 @@ function CatGrid({ list, selected, onPick, onNew }: { list: Category[]; selected
     <div className="grid grid-cols-4 gap-x-2 gap-y-3 sm:grid-cols-5">
       {list.map((c) => (
         <button key={c.id} type="button" onClick={() => onPick(c.id)} className="flex min-w-0 flex-col items-center gap-1.5 rounded-xl py-1.5 hover:bg-line-soft">
-          <Bubble icon={c.icon} color={c.color} size={52} className={selected === c.id ? 'ring-[3px] ring-offset-2 ring-[#b9c9f1]' : ''} />
+          <Bubble icon={c.icon} color={c.color} size={52} className={selected === c.id ? 'ring-[3px] ring-offset-2 ring-offset-card ring-focus' : ''} />
           <span className="w-full truncate px-0.5 text-center text-[13px] text-mute">{c.name}</span>
         </button>
       ))}
@@ -79,7 +79,7 @@ export function CategoryEditor({ kind, cat, initialName, onClose, onSaved }: { k
       </div>
       <IconColorPicker icon={icon} color={color} onIcon={setIcon} onColor={setColor} />
       {err && <p className="text-[14px] text-rose-ink" role="alert">{err}</p>}
-      <div className="sticky bottom-0 -mx-4 flex items-center gap-2 border-t border-line-soft bg-white px-4 pt-3">
+      <div className="sticky bottom-0 -mx-4 flex items-center gap-2 border-t border-line-soft bg-card px-4 pt-3">
         <button type="button" className="btn btn-primary flex-1" onClick={save}>{cat ? 'Save' : 'Add category'}</button>
         {cat && <ConfirmButton confirmText={used ? `Delete? ${used} entries keep the name` : 'Tap again to delete'} onConfirm={() => { remove('categories', cat.id, 'Category deleted'); onClose(); }}>Delete</ConfirmButton>}
       </div>

@@ -37,8 +37,74 @@
   --color-gray-ink: #4a5566;
   --color-bar: #7c97dd;
 
+  /* extra surface / outline tokens (so dark mode can swap them) */
+  --color-pri-line: #c9d6f4;
+  --color-pri-line-strong: #9db2e8;
+  --color-focus: #b9c9f1;
+  --color-focus-glow: #e2e9fa;
+  --color-pri-tint: #f1f5fd;
+  --color-pri-tint2: #e8eefb;
+  --color-pri-tint3: #e0e8fa;
+  --color-amber-tint: #fdf6ea;
+  --color-mint-tint: #eef8f3;
+  --color-lav-tint: #f5f2fc;
+  --color-lav-line: #e4def6;
+  --color-edge: #cfd6e0;
+  --color-edge-strong: #b9c3d1;
+  --color-bar-active: #e4e9f0;
+  --color-cb: #b7c0cd;
+  --shadow-pop: 0 6px 24px rgba(31, 45, 61, 0.12);
+
   --radius-card: 16px;
   --shadow-card: 0 1px 2px rgba(31, 45, 61, 0.04), 0 2px 8px rgba(31, 45, 61, 0.04);
+}
+
+/* ---------- Dark mode: same design, darker surfaces. Set on <html data-theme="dark"> ---------- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #10151c;
+  --color-card: #171e27;
+  --color-line: #2a3442;
+  --color-line-soft: #202934;
+  --color-ink: #e6eaf0;
+  --color-mute: #a3adbb;
+  --color-faint: #788394;
+
+  --color-pri: #6a8ce6;
+  --color-pri-hover: #84a1ee;
+  --color-pri-soft: #1f2a45;
+  --color-pri-ink: #a9bff5;
+
+  --color-mint-soft: #16332a;
+  --color-mint-ink: #8fdcb7;
+  --color-amber-soft: #3a2c17;
+  --color-amber-ink: #f0c48f;
+  --color-rose-soft: #3f1f28;
+  --color-rose-ink: #f4aab7;
+  --color-lav-soft: #2a2341;
+  --color-lav-ink: #c9baf3;
+  --color-teal-soft: #15323a;
+  --color-teal-ink: #8fd3df;
+  --color-gray-soft: #232c38;
+  --color-gray-ink: #b7c1ce;
+
+  --color-pri-line: #34466f;
+  --color-pri-line-strong: #4b63a3;
+  --color-focus: #4a64a8;
+  --color-focus-glow: #1f2a45;
+  --color-pri-tint: #182339;
+  --color-pri-tint2: #1c2843;
+  --color-pri-tint3: #22304f;
+  --color-amber-tint: #2a2117;
+  --color-mint-tint: #142820;
+  --color-lav-tint: #201b31;
+  --color-lav-line: #3a3157;
+  --color-edge: #3a4555;
+  --color-edge-strong: #4c5869;
+  --color-bar-active: #2c3644;
+  --color-cb: #5a6677;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-pop: 0 8px 28px rgba(0, 0, 0, 0.5);
 }
 
 @layer base {
@@ -66,7 +132,7 @@
     cursor: pointer;
   }
   :focus-visible {
-    outline: 3px solid #b9c9f1;
+    outline: 3px solid var(--color-focus);
     outline-offset: 2px;
   }
 }
@@ -89,13 +155,13 @@
     @apply font-mono tabular-nums tracking-[-0.01em];
   }
   .input {
-    @apply w-full min-w-0 min-h-11 rounded-[10px] border border-line bg-white px-3 py-2 text-ink placeholder:text-faint outline-none transition-[border-color,box-shadow];
+    @apply w-full min-w-0 min-h-11 rounded-[10px] border border-line bg-card px-3 py-2 text-ink placeholder:text-faint outline-none transition-[border-color,box-shadow];
     -webkit-appearance: none;
     appearance: none;
   }
   .input:focus {
-    border-color: #9db2e8;
-    box-shadow: 0 0 0 3px #e2e9fa;
+    border-color: var(--color-pri-line-strong);
+    box-shadow: 0 0 0 3px var(--color-focus-glow);
   }
   .input[aria-invalid='true'] {
     border-color: var(--color-amber);
@@ -119,10 +185,10 @@
     @apply bg-pri text-white hover:bg-pri-hover;
   }
   .btn-soft {
-    @apply bg-pri-soft text-pri-ink hover:bg-[#e0e8fa];
+    @apply bg-pri-soft text-pri-ink hover:bg-pri-tint3;
   }
   .btn-ghost {
-    @apply bg-white border border-line text-ink hover:border-[#b9c7ec] hover:text-pri-ink;
+    @apply bg-card border border-line text-ink hover:border-pri-line-strong hover:text-pri-ink;
   }
   .btn-quiet {
     @apply text-mute px-2.5 hover:text-pri-ink hover:bg-line-soft;
@@ -140,10 +206,10 @@
     @apply size-9;
   }
   .chip {
-    @apply inline-flex items-center gap-1.5 min-h-9 shrink-0 rounded-full border border-line bg-white px-3.5 text-sm text-mute whitespace-nowrap hover:border-[#b9c7ec] hover:text-pri-ink;
+    @apply inline-flex items-center gap-1.5 min-h-9 shrink-0 rounded-full border border-line bg-card px-3.5 text-sm text-mute whitespace-nowrap hover:border-pri-line-strong hover:text-pri-ink;
   }
   .chip[aria-pressed='true'] {
-    @apply bg-pri-soft border-[#c9d6f4] text-pri-ink font-semibold;
+    @apply bg-pri-soft border-pri-line text-pri-ink font-semibold;
   }
   .seg {
     @apply flex gap-2 overflow-x-auto pb-0.5 -mx-0.5 px-0.5;
@@ -163,7 +229,7 @@
     @apply text-center text-mute py-6 px-3 text-[15px];
   }
   .checkbox {
-    @apply grid size-[22px] shrink-0 cursor-pointer place-content-center rounded-md border-[1.5px] border-[#b7c0cd] bg-white;
+    @apply grid size-[22px] shrink-0 cursor-pointer place-content-center rounded-md border-[1.5px] border-cb bg-card;
     -webkit-appearance: none;
     appearance: none;
   }
@@ -214,7 +280,7 @@
   content: '';
   position: absolute; left: 0; top: 0.22em;
   width: 1.15em; height: 1.15em;
-  border: 1.5px solid #b7c0cd; border-radius: 5px; background: white;
+  border: 1.5px solid var(--color-cb); border-radius: 5px; background: var(--color-card);
   cursor: pointer;
 }
 .note-body ul[data-type='check'] > li[data-checked='true'] { color: var(--color-faint); text-decoration: line-through; }
@@ -233,7 +299,7 @@
 /* Round tick — click to mark done */
 .note-body [data-tick] {
   display: inline-block; width: 1.05em; height: 1.05em; margin-right: 0.3em; vertical-align: -0.16em;
-  border: 1.6px solid #9aa5b4; border-radius: 999px; background: white; cursor: pointer; user-select: none;
+  border: 1.6px solid var(--color-cb); border-radius: 999px; background: var(--color-card); cursor: pointer; user-select: none;
   transition: background-color .15s, border-color .15s;
 }
 .note-body [data-tick]:hover { border-color: #5fae8c; }
@@ -241,3 +307,18 @@
   border-color: #3f9f74;
   background: #3f9f74 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath d='M5.5 12.5l4 4L18.5 7.5' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 78% no-repeat;
 }
+
+/* Dark mode: keep notes readable when text has an explicit dark colour (default ink, black from Excel/Word) */
+:root[data-theme='dark'] .note-body [style*='color: rgb(38, 48, 61)'],
+:root[data-theme='dark'] .note-body [style*='color:rgb(38, 48, 61)'],
+:root[data-theme='dark'] .note-body [style*='color: rgb(0, 0, 0)'],
+:root[data-theme='dark'] .note-body [style*='color:rgb(0, 0, 0)'],
+:root[data-theme='dark'] .note-body [style*='color: #000'],
+:root[data-theme='dark'] .note-body [style*='color:#000'] { color: var(--color-ink) !important; }
+/* …and text on light highlight / cell fill colours stays dark so it can be read */
+:root[data-theme='dark'] .note-body span[style*='background-color'],
+:root[data-theme='dark'] .note-body mark,
+:root[data-theme='dark'] .note-body td[style*='background-color'],
+:root[data-theme='dark'] .note-body th[style*='background-color'] { color: #1d2430; }
+:root[data-theme='dark'] .note-body td[style*='background-color'] a,
+:root[data-theme='dark'] .note-body span[style*='background-color'] a { color: #2f4c99; }

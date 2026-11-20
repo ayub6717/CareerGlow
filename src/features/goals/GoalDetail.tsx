@@ -31,7 +31,7 @@ export default function GoalDetail({ id }: { id: string }) {
   const inflation = settingNum(db, 'inflation');
   const dependents = db.goals.filter((x) => x.deps.includes(g.id));
 
-  const scen = ([['Best case', 'save 25% more, price 5% lower', { monthly: c.monthly * 1.25, costX: 0.95 }, 'bg-[#eef8f3]'], ['Realistic', 'your current plan', {}, 'bg-[#f1f5fd]'], ['Worst case', 'save 25% less, price +10%', { monthly: c.monthly * 0.75, costX: 1.1, infAdd: 0.02 }, 'bg-[#fdf6ea]']] as const)
+  const scen = ([['Best case', 'save 25% more, price 5% lower', { monthly: c.monthly * 1.25, costX: 0.95 }, 'bg-mint-tint'], ['Realistic', 'your current plan', {}, 'bg-pri-tint'], ['Worst case', 'save 25% less, price +10%', { monthly: c.monthly * 0.75, costX: 1.1, infAdd: 0.02 }, 'bg-amber-tint']] as const)
     .map(([name, how, o, bg]) => { const x = goalCalc(db, g, o); return { name, how, bg, finish: Number.isFinite(x.pace) ? monthLabel(x.finishI) : 'Never', line: `${tkS(x.monthly)}/mo · ${tkS(x.real)}` }; });
   const surplusAfter = F.saving - (g.running || 0);
   const aff = surplusAfter > 0 && F.emPct >= 100 ? (['Affordable', 'mint'] as const) : surplusAfter > 0 ? (['Tight', 'amber'] as const) : (['Not yet', 'rose'] as const);
@@ -78,7 +78,7 @@ export default function GoalDetail({ id }: { id: string }) {
               </li>
             ))}</ul>
             <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); addMs(); }}><input className="input" value={ms} onChange={(e) => setMs(e.target.value)} placeholder="Add a milestone" aria-label="New milestone" /><button className="btn btn-soft" type="submit">Add</button></form>
-            <div className="soft bg-[#f1f5fd] text-[14px]">When it’s done → {dependents.length ? `unlocks ${dependents.map((x) => x.name).join(', ')}` : 'review what worked and pick the next goal'}</div>
+            <div className="soft bg-pri-tint text-[14px]">When it’s done → {dependents.length ? `unlocks ${dependents.map((x) => x.name).join(', ')}` : 'review what worked and pick the next goal'}</div>
           </Card>
 
           <Card className="flex flex-col gap-3">
@@ -107,7 +107,7 @@ export default function GoalDetail({ id }: { id: string }) {
                 ))}</ul>
                 <div className="flex items-end justify-between border-t border-line pt-3"><button className="btn btn-sm btn-ghost" onClick={() => addItem()}>+ Add line</button><div className="text-right"><div className="lbl">Total today</div><div className="num text-[22px]">{tk(c.target)}</div></div></div>
                 {(tips.length > 0 || (c.target > 0 && !have.includes('contingency (10%)'))) && (
-                  <div className="soft flex flex-col gap-2 bg-[#fdf6ea]"><span className="text-[14px] font-semibold">Often forgotten</span>
+                  <div className="soft flex flex-col gap-2 bg-amber-tint"><span className="text-[14px] font-semibold">Often forgotten</span>
                     <div className="flex flex-wrap gap-2">
                       {tips.map((t) => <button key={t} className="chip border-dashed" onClick={() => addItem(t)}>+ {t}</button>)}
                       {c.target > 0 && !have.includes('contingency (10%)') && <button className="chip border-dashed" onClick={() => addItem('Contingency (10%)', Math.round(c.target * 0.1))}>+ Contingency (10%)</button>}
@@ -172,10 +172,10 @@ export default function GoalDetail({ id }: { id: string }) {
         </div>
 
         <aside className="flex min-w-0 flex-[1_1_300px] flex-col gap-[18px]">
-          <Card className="flex flex-col gap-3 !border-[#dce5f8] !bg-[#f1f5fd]">
+          <Card className="flex flex-col gap-3 !border-pri-line !bg-pri-tint">
             <div className="flex items-center justify-between"><span className="lbl">Progress</span><Pill tone={KIND_TONE[c.kind]}>{c.status}</Pill></div>
             <div className="num text-[38px] leading-none text-pri-ink">{c.pct}%</div>
-            <Bar pct={c.pct} track="bg-[#dde6f8]" />
+            <Bar pct={c.pct} track="bg-pri-tint3" />
             {g.useBudget && (
               <>
                 <div><div className="lbl">Real cost on {monthLabel(c.dueI)}</div><div className="num text-[22px]">{tk(c.real)}</div><div className="text-[13px] text-mute">{tkS(c.target)} today + {inflation}%/yr × {Math.max(0, (c.dueI - nowIdx()) / 12).toFixed(1)} yrs</div></div>
@@ -194,7 +194,7 @@ export default function GoalDetail({ id }: { id: string }) {
                 <h2 className="h2">What if I save…</h2>
                 <div className="flex items-baseline justify-between"><span className="num text-[22px]">{tk(g.monthly)}</span><span className="text-[14px] text-mute">a month</span></div>
                 <input type="range" aria-label="Monthly saving for this goal" className="w-full accent-pri" min={0} step={500} max={Math.max(10000, Math.ceil((c.need * 2) / 1000) * 1000, Math.ceil((g.monthly * 1.5) / 1000) * 1000)} value={g.monthly} onChange={(e) => set({ monthly: num(e.target.value) }, true)} />
-                <div className="soft bg-[#f1f5fd] text-[14px]">Done by <strong className="font-semibold">{Number.isFinite(c.pace) ? monthLabel(c.finishI) : 'never at ৳0/mo'}</strong>. {Number.isFinite(c.late) && <span className={c.late > 0 ? 'text-amber-ink' : 'text-mint-ink'}>{c.late > 0 ? `${dur(c.late)} late.` : c.late < 0 ? `${dur(-c.late)} early.` : 'Right on time.'}</span>}</div>
+                <div className="soft bg-pri-tint text-[14px]">Done by <strong className="font-semibold">{Number.isFinite(c.pace) ? monthLabel(c.finishI) : 'never at ৳0/mo'}</strong>. {Number.isFinite(c.late) && <span className={c.late > 0 ? 'text-amber-ink' : 'text-mint-ink'}>{c.late > 0 ? `${dur(c.late)} late.` : c.late < 0 ? `${dur(-c.late)} early.` : 'Right on time.'}</span>}</div>
               </Card>
               <Card className="flex flex-col gap-3">
                 <h2 className="h2">Add savings</h2>

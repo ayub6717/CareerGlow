@@ -32,9 +32,9 @@ export function Sheet({ title, onClose, children, wide }: { title: string; onClo
     return () => { window.removeEventListener('keydown', h); document.body.style.overflow = prev; };
   }, [onClose]);
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/25 md:items-center md:p-6" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 md:items-center md:p-6" onClick={onClose}>
       <div role="dialog" aria-label={title} onClick={(e) => e.stopPropagation()}
-        className={`flex max-h-[90dvh] w-full flex-col rounded-t-[20px] bg-white md:rounded-[18px] ${wide ? 'md:max-w-[640px]' : 'md:max-w-[460px]'}`}>
+        className={`flex max-h-[90dvh] w-full flex-col rounded-t-[20px] bg-card md:rounded-[18px] ${wide ? 'md:max-w-[640px]' : 'md:max-w-[460px]'}`}>
         <div className="flex items-center justify-between gap-2 border-b border-line-soft px-4 py-2.5">
           <h2 className="h2">{title}</h2>
           <button type="button" className="icon-btn" aria-label="Close" onClick={onClose}><Icon name="x" /></button>
@@ -62,7 +62,7 @@ export function KindTabs<T extends string>({ value, onChange, options }: { value
     <div className="grid grid-cols-2 rounded-xl bg-line-soft p-1" role="tablist">
       {options.map((o) => (
         <button key={o.value} type="button" role="tab" aria-selected={o.value === value} onClick={() => onChange(o.value)}
-          className={`min-h-10 rounded-[9px] text-[15px] font-semibold uppercase tracking-[0.04em] transition-colors ${o.value === value ? 'bg-white text-pri-ink shadow-[var(--shadow-card)]' : 'text-mute hover:text-ink'}`}>{o.label}</button>
+          className={`min-h-10 rounded-[9px] text-[15px] font-semibold uppercase tracking-[0.04em] transition-colors ${o.value === value ? 'bg-card text-pri-ink shadow-[var(--shadow-card)]' : 'text-mute hover:text-ink'}`}>{o.label}</button>
       ))}
     </div>
   );
@@ -110,7 +110,7 @@ export function IconColorPicker({ icon, color, onIcon, onColor, groups }: { icon
         <div className="flex flex-wrap items-center gap-2.5">
           {MONEY_COLORS.map((c) => (
             <button key={c} type="button" aria-label={`Color ${c}`} aria-pressed={c.toLowerCase() === color.toLowerCase()} onClick={() => onColor(c)}
-              className={`size-9 rounded-full transition-transform ${c.toLowerCase() === color.toLowerCase() ? 'scale-110 ring-[3px] ring-offset-2 ring-[#b9c9f1]' : ''}`} style={{ background: c }} />
+              className={`size-9 rounded-full transition-transform ${c.toLowerCase() === color.toLowerCase() ? 'scale-110 ring-[3px] ring-offset-2 ring-offset-card ring-focus' : ''}`} style={{ background: c }} />
           ))}
           <label className="relative grid size-9 cursor-pointer place-items-center rounded-full border border-dashed border-faint text-mute" title="Custom colour">
             <Icon name="plus" size={18} />

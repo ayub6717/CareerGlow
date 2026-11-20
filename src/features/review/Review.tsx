@@ -71,9 +71,9 @@ export default function Review() {
       <Card className="flex flex-col gap-3">
         <h2 className="h2">This month’s report</h2>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3 text-[14px]">
-          <div className="soft bg-[#eef8f3]"><div className="lbl mb-1 !text-mint-ink">Achieved</div>{(wins.length ? wins : ['Nothing recorded yet.']).map((x) => <div key={x} className="py-0.5">{x}</div>)}</div>
-          <div className="soft bg-[#fdf6ea]"><div className="lbl mb-1 !text-amber-ink">Needs attention</div>{(leaks.length ? leaks : ['Nothing worrying.']).map((x) => <div key={x} className="py-0.5">{x}</div>)}</div>
-          <div className="soft bg-[#f1f5fd]"><div className="lbl mb-1 !text-pri-ink">Next month</div>{(next.length ? next : ['Keep the pace.']).map((x) => <div key={x} className="py-0.5">{x}</div>)}</div>
+          <div className="soft bg-mint-tint"><div className="lbl mb-1 !text-mint-ink">Achieved</div>{(wins.length ? wins : ['Nothing recorded yet.']).map((x) => <div key={x} className="py-0.5">{x}</div>)}</div>
+          <div className="soft bg-amber-tint"><div className="lbl mb-1 !text-amber-ink">Needs attention</div>{(leaks.length ? leaks : ['Nothing worrying.']).map((x) => <div key={x} className="py-0.5">{x}</div>)}</div>
+          <div className="soft bg-pri-tint"><div className="lbl mb-1 !text-pri-ink">Next month</div>{(next.length ? next : ['Keep the pace.']).map((x) => <div key={x} className="py-0.5">{x}</div>)}</div>
         </div>
       </Card>
 

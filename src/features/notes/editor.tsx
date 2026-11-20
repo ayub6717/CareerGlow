@@ -559,7 +559,7 @@ export function NoteEditor({ initial, onChange, placeholder = 'Start typing…' 
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="sticky top-0 z-20 -mx-1 flex flex-col gap-1 bg-white/95 px-1 py-1.5 backdrop-blur-sm max-md:top-[calc(57px+env(safe-area-inset-top))]">
+      <div className="sticky top-0 z-20 -mx-1 flex flex-col gap-1 bg-card/95 px-1 py-1.5 backdrop-blur-sm max-md:top-[calc(57px+env(safe-area-inset-top))]">
         <div className="seg !gap-0.5 items-center md:flex-wrap md:!overflow-visible" role="toolbar" aria-label="Formatting">
           {/* text size */}
           <B label="Smaller text (Ctrl+Shift+<)" onClick={() => stepSize(-1)}><span className="text-[12px] font-semibold">A−</span></B>
@@ -609,7 +609,7 @@ export function NoteEditor({ initial, onChange, placeholder = 'Start typing…' 
             </form>
             {SIZES.map((s) => (
               <button key={s} type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { setSize(s); setPop(null); }}
-                className={`min-h-8 shrink-0 rounded-lg border px-2.5 ${s === curSize ? 'border-[#c9d6f4] bg-pri-soft text-pri-ink' : 'border-line hover:bg-line-soft'}`} style={{ fontSize: Math.min(s, 20) }}>{s}</button>
+                className={`min-h-8 shrink-0 rounded-lg border px-2.5 ${s === curSize ? 'border-pri-line bg-pri-soft text-pri-ink' : 'border-line hover:bg-line-soft'}`} style={{ fontSize: Math.min(s, 20) }}>{s}</button>
             ))}
           </div>
         )}
@@ -634,7 +634,7 @@ export function NoteEditor({ initial, onChange, placeholder = 'Start typing…' 
             <div className="grid grid-cols-8 gap-[3px]" onMouseLeave={() => setHover([0, 0])} role="grid" aria-label="Choose table size">
               {Array.from({ length: 48 }, (_, k) => { const rr = Math.floor(k / 8) + 1, cc = (k % 8) + 1; const on = rr <= hover[0] && cc <= hover[1]; return (
                 <button key={k} type="button" aria-label={`${rr} by ${cc} table`} onMouseDown={(e) => e.preventDefault()} onMouseEnter={() => setHover([rr, cc])} onFocus={() => setHover([rr, cc])} onClick={() => insertTable(rr, cc)}
-                  className={`size-5 rounded-[4px] border ${on ? 'border-pri bg-pri-soft' : 'border-line bg-white'}`} />); })}
+                  className={`size-5 rounded-[4px] border ${on ? 'border-pri bg-pri-soft' : 'border-line bg-card'}`} />); })}
             </div>
             <div className="flex flex-col gap-1.5 text-[13px] text-mute">
               <span>{hover[0] ? `${hover[0]} rows × ${hover[1]} columns` : 'Pick a size'}</span>
@@ -647,7 +647,7 @@ export function NoteEditor({ initial, onChange, placeholder = 'Start typing…' 
           <div className="seg !gap-1 items-center px-1" role="toolbar" aria-label="Table">{/* one line, so the page never jumps while you drag across cells */}
             <span className="shrink-0 pr-1 text-[12px] font-semibold uppercase tracking-[0.05em] text-faint">{range ? `${(range.r1 - range.r0 + 1) * (range.c1 - range.c0 + 1)} cells` : 'Table'}</span>
             <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => toggle('fill')} aria-pressed={pop === 'fill'}
-              className={`flex min-h-8 shrink-0 items-center gap-1.5 rounded-lg border px-2.5 text-[13px] ${pop === 'fill' ? 'border-[#c9d6f4] bg-pri-soft text-pri-ink' : 'border-line text-ink hover:bg-line-soft'}`}>
+              className={`flex min-h-8 shrink-0 items-center gap-1.5 rounded-lg border px-2.5 text-[13px] ${pop === 'fill' ? 'border-pri-line bg-pri-soft text-pri-ink' : 'border-line text-ink hover:bg-line-soft'}`}>
               <span className="size-3.5 rounded-[3px] border border-line bg-gradient-to-br from-[#fff2a8] via-[#d3f2dc] to-[#d6e4ff]" />Fill colour</button>
             <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={tickCells} className="flex min-h-8 shrink-0 items-center gap-1 rounded-lg border border-line px-2.5 text-[13px] text-ink hover:bg-line-soft">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8.5" /><path d="M8.5 12.3l2.4 2.4 4.6-4.9" /></svg>Tick</button>
@@ -689,12 +689,12 @@ export function NoteEditor({ initial, onChange, placeholder = 'Start typing…' 
       <div ref={wrap} className="relative flex flex-1 flex-col" onScrollCapture={() => place()} onMouseMove={onMove} onMouseLeave={() => { if (hoverTbl.current) { hoverTbl.current = null; place(); } }}>
         <div ref={ref} className="note-body min-h-[70dvh] flex-1 cursor-text py-2 pb-[30dvh] outline-none" contentEditable suppressContentEditableWarning role="textbox" aria-multiline="true" aria-label="Page content"
           data-placeholder={placeholder} onInput={emit} onClick={onClick} onKeyDown={onKeyDown} onPaste={onPaste} onKeyUp={keepSel} onMouseUp={keepSel} onBlur={onBlur} onMouseDown={onMouseDown} />
-        {cellBox && !rangeBox && <div aria-hidden="true" className="pointer-events-none absolute z-[5] rounded-[2px] ring-2 ring-[#9db2e8]" style={cellBox} />}
-        {rangeBox && <div aria-hidden="true" className="pointer-events-none absolute z-[5] rounded-[2px] bg-[#4d6fcc]/10 ring-2 ring-pri" style={rangeBox} />}
+        {cellBox && !rangeBox && <div aria-hidden="true" className="pointer-events-none absolute z-[5] rounded-[2px] ring-2 ring-pri-line-strong" style={cellBox} />}
+        {rangeBox && <div aria-hidden="true" className="pointer-events-none absolute z-[5] rounded-[2px] bg-pri/10 ring-2 ring-pri" style={rangeBox} />}
         {allLines.map(({ table: tb, box: bx, rows, cols }, ti) => {
           const active = tb === tbl;
           const base = `absolute z-10 rounded-[4px] border transition-colors`;
-          const idle = active ? 'border-[#b9c3d1] bg-[#e4e9f0] hover:border-[#9db2e8] hover:bg-pri-soft' : 'border-[#cfd6e0] bg-line-soft hover:border-[#9db2e8] hover:bg-pri-soft';
+          const idle = active ? 'border-edge-strong bg-bar-active hover:border-pri-line-strong hover:bg-pri-soft' : 'border-edge bg-line-soft hover:border-pri-line-strong hover:bg-pri-soft';
           const whole = !!range && range.table === tb && fullRows(range) && fullCols(range);
           return (
             <div key={`t${ti}`} className="contents">
@@ -718,10 +718,10 @@ export function NoteEditor({ initial, onChange, placeholder = 'Start typing…' 
           <>
             {/* round + buttons sitting on the table's bottom and right edges */}
             <button type="button" data-table-handle aria-label="Add a row at the bottom" title="Add row" onMouseDown={(e) => e.preventDefault()} onClick={() => appendRow(tbl)}
-              className="absolute z-10 flex h-6 items-center gap-1 rounded-full border border-[#b9c7ec] bg-white px-2.5 text-[12px] font-semibold text-pri-ink shadow-[0_2px_8px_rgba(31,45,61,.12)] hover:bg-pri-soft"
+              className="absolute z-10 flex h-6 items-center gap-1 rounded-full border border-pri-line bg-card px-2.5 text-[12px] font-semibold text-pri-ink shadow-pop hover:bg-pri-soft"
               style={{ top: box.top + box.height - 12, left: box.left + box.width / 2 - 34 }}><span className="text-[15px] leading-none">+</span>Row</button>
             <button type="button" data-table-handle aria-label="Add a column on the right" title="Add column" onMouseDown={(e) => e.preventDefault()} onClick={() => appendCol(tbl)}
-              className="absolute z-10 flex w-6 flex-col items-center justify-center gap-0.5 rounded-full border border-[#b9c7ec] bg-white py-2 text-[12px] font-semibold text-pri-ink shadow-[0_2px_8px_rgba(31,45,61,.12)] hover:bg-pri-soft"
+              className="absolute z-10 flex w-6 flex-col items-center justify-center gap-0.5 rounded-full border border-pri-line bg-card py-2 text-[12px] font-semibold text-pri-ink shadow-pop hover:bg-pri-soft"
               style={{ top: box.top + box.height / 2 - 26, left: box.left + box.width - 12 }}><span className="text-[15px] leading-none">+</span><span className="[writing-mode:vertical-rl]">Col</span></button>
           </>
         )}

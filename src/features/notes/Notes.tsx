@@ -27,7 +27,7 @@ function useIsDesktop() {
 function FoldBtn({ open: isOpen, label, onClick }: { open: boolean; label: string; onClick: () => void }) {
   return (
     <button type="button" aria-label={label} title={label} onClick={onClick}
-      className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-line bg-white text-mute shadow-[var(--shadow-card)] hover:border-[#b9c7ec] hover:bg-pri-soft hover:text-pri-ink">
+      className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-line bg-card text-mute shadow-[var(--shadow-card)] hover:border-pri-line hover:bg-pri-soft hover:text-pri-ink">
       <Icon name={isOpen ? 'chevronsLeft' : 'chevronsRight'} size={18} />
     </button>
   );
@@ -129,7 +129,7 @@ export default function Notes({ param }: { param: string }) {
     <div className="flex min-h-0 flex-col gap-2">
       {desktop ? (
         <div className="flex items-center gap-1">
-          <button type="button" onClick={() => setPickNb(true)} className="flex min-h-12 min-w-0 flex-1 items-center gap-2.5 rounded-xl border border-line bg-white px-2.5 text-left hover:border-[#b9c7ec]" aria-haspopup="dialog">
+          <button type="button" onClick={() => setPickNb(true)} className="flex min-h-12 min-w-0 flex-1 items-center gap-2.5 rounded-xl border border-line bg-card px-2.5 text-left hover:border-pri-line" aria-haspopup="dialog">
             <span className="grid size-8 shrink-0 place-items-center rounded-lg text-white" style={{ background: nb.color }}><Icon name="book" size={17} /></span>
             <span className="min-w-0 flex-1 truncate font-semibold">{nb.name}</span><Icon name="down" size={16} className="text-mute" />
           </button>
@@ -207,7 +207,7 @@ export default function Notes({ param }: { param: string }) {
   if (firstRun) body = firstRun;
   else if (desktop) {
     body = (
-      <div className="grid h-[calc(100dvh-150px)] min-h-[520px] overflow-hidden rounded-[var(--radius-card)] border border-line bg-white shadow-[var(--shadow-card)] transition-[grid-template-columns] duration-200"
+      <div className="grid h-[calc(100dvh-150px)] min-h-[520px] overflow-hidden rounded-[var(--radius-card)] border border-line bg-card shadow-[var(--shadow-card)] transition-[grid-template-columns] duration-200"
         style={{ gridTemplateColumns: `${fold.secs ? '52px' : '240px'} ${fold.pages ? '52px' : '260px'} minmax(0,1fr)` }}>
         {fold.secs ? (
           <div className="flex min-h-0 flex-col items-center gap-2 overflow-y-auto border-r border-line-soft bg-bg/60 py-3">
@@ -216,7 +216,7 @@ export default function Notes({ param }: { param: string }) {
             <span className="h-px w-6 bg-line" />
             {sections.map((s) => (
               <button key={s.id} type="button" title={s.name} aria-label={s.name} onClick={() => open(nb!.id, s.id)}
-                className={`grid size-8 place-items-center rounded-lg text-[13px] font-semibold text-white ${sec?.id === s.id ? 'ring-[3px] ring-[#b9c9f1] ring-offset-1' : 'opacity-80 hover:opacity-100'}`} style={{ background: s.color }}>{s.name.trim().charAt(0).toUpperCase() || '•'}</button>
+                className={`grid size-8 place-items-center rounded-lg text-[13px] font-semibold text-white ${sec?.id === s.id ? 'ring-[3px] ring-focus ring-offset-1 ring-offset-card' : 'opacity-80 hover:opacity-100'}`} style={{ background: s.color }}>{s.name.trim().charAt(0).toUpperCase() || '•'}</button>
             ))}
           </div>
         ) : (
@@ -339,7 +339,7 @@ function ManageSheet({ m, onClose, current }: { m: Manage; onClose: () => void; 
         <div className="flex flex-col gap-2"><span className="lbl">Colour</span>
           <div className="flex flex-wrap gap-2.5">{NOTE_COLORS.map((c) => (
             <button key={c} type="button" aria-label={`Colour ${c}`} aria-pressed={c === color} onClick={() => update(table, item.id, { color: c })}
-              className={`size-9 rounded-full ${c === color ? 'ring-[3px] ring-offset-2 ring-[#b9c9f1]' : ''}`} style={{ background: c }} />
+              className={`size-9 rounded-full ${c === color ? 'ring-[3px] ring-offset-2 ring-offset-card ring-focus' : ''}`} style={{ background: c }} />
           ))}</div>
         </div>
       )}
