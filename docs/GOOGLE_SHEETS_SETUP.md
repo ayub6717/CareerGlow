@@ -1,6 +1,6 @@
 # Google Sheets setup (about 10 minutes)
 
-Blueprint has no backend. It talks to the **Google Sheets API directly from your browser**, using
+Lifenest has no backend. It talks to the **Google Sheets API directly from your browser**, using
 **Google sign-in (OAuth 2.0)**. You only need a public **OAuth Client ID**.
 
 > **Never** put a client secret, a service-account JSON key, or an API key with write access in this
@@ -9,7 +9,7 @@ Blueprint has no backend. It talks to the **Google Sheets API directly from your
 ## 1. Create a Google Cloud project
 
 1. Open <https://console.cloud.google.com/> and sign in with the Google account that should own the data.
-2. Top bar → project picker → **New project** → name it `Blueprint` → **Create**, then select it.
+2. Top bar → project picker → **New project** → name it `Lifenest` → **Create**, then select it.
 
 ## 2. Turn on the Google Sheets API
 
@@ -20,7 +20,7 @@ Blueprint has no backend. It talks to the **Google Sheets API directly from your
 
 Menu → **Google Auth Platform** (older consoles call this **APIs & Services → OAuth consent screen**).
 
-1. **Branding**: App name `Blueprint`, your email as support and developer contact → **Save**.
+1. **Branding**: App name `Lifenest`, your email as support and developer contact → **Save**.
 2. **Audience**: User type **External**, publishing status **Testing**.
    Under **Test users** → **Add users** → add your own Gmail address. Only test users can sign in.
 3. **Data access** → **Add or remove scopes** → tick
@@ -29,7 +29,7 @@ Menu → **Google Auth Platform** (older consoles call this **APIs & Services �
 ## 4. Create the OAuth Client ID
 
 1. **Google Auth Platform → Clients** (or **APIs & Services → Credentials → Create credentials → OAuth client ID**).
-2. Application type: **Web application**. Name: `Blueprint web`.
+2. Application type: **Web application**. Name: `Lifenest web`.
 3. **Authorized JavaScript origins** → add:
    - `http://localhost:5173`
    - your live address later, e.g. `https://your-site.netlify.app` (must be **https**)
@@ -56,15 +56,15 @@ Open <http://localhost:5173> in Chrome:
 1. **Continue with Google** → choose your account.
 2. Google shows *“Google hasn’t verified this app”* because it is in Testing mode and only for you → **Continue**.
 3. Allow access to Google Sheets.
-4. **Create a new spreadsheet** (recommended) — or paste the link of an existing Blueprint sheet.
+4. **Create a new spreadsheet** (recommended) — or paste the link of an existing Lifenest sheet.
 
-A spreadsheet called **Blueprint — Life Planner** appears in your Google Drive with all tabs and header rows.
+A spreadsheet called **Lifenest — Life Planner** appears in your Google Drive with all tabs and header rows.
 The app remembers which spreadsheet to open (only its id, in this browser). Your data lives in the sheet.
 
 ## Using it on your iPhone
 
 Google only accepts sign-in from `http://localhost` or an **https** address, so `http://192.168.x.x:5173`
-from your phone will be refused. To use Blueprint on iPhone 16 Pro / Pro Max:
+from your phone will be refused. To use Lifenest on iPhone 16 Pro / Pro Max:
 
 1. `npm run build` → deploy the `dist/` folder to any static host with https (Netlify, Vercel, Cloudflare Pages, GitHub Pages).
 2. Add that https address to **Authorized JavaScript origins** (step 4).
@@ -73,7 +73,7 @@ from your phone will be refused. To use Blueprint on iPhone 16 Pro / Pro Max:
 
 ## How sign-in behaves
 
-- The access token lives only in memory and lasts about an hour; Blueprint asks Google for a fresh one when needed.
+- The access token lives only in memory and lasts about an hour; Lifenest asks Google for a fresh one when needed.
 - After a page reload you tap **Continue with Google** once (browsers block sign-in pop-ups that aren't triggered by a tap).
 - **Sign out** (sidebar or *More* menu) revokes the token. **Switch sheet** lets you choose a different spreadsheet.
 

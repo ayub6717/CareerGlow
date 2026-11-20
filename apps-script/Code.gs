@@ -1,5 +1,5 @@
 /**
- * Blueprint ⇄ Google Sheets bridge. Paste into an Apps Script project and deploy as a Web app
+ * Lifenest ⇄ Google Sheets bridge. Paste into an Apps Script project and deploy as a Web app
  * (Execute as: Me · Who has access: Anyone). The app POSTs {method, path, body}; this forwards it to
  * the Sheets API as you and returns {status, body}. Only SHEET_ID can be touched.
  */
@@ -11,7 +11,7 @@ function doPost(e) {
   try {
     const req = JSON.parse(e.postData.contents);
     if (!new RegExp('^/' + SHEET_ID + '(?:[/?:]|$)').test(req.path)) {
-      out = { status: 403, body: JSON.stringify({ error: { message: 'Only the Blueprint spreadsheet can be used.' } }) };
+      out = { status: 403, body: JSON.stringify({ error: { message: 'Only the Lifenest spreadsheet can be used.' } }) };
     } else {
       const method = (req.method || 'GET').toLowerCase();
       const opts = { method: method, muteHttpExceptions: true, headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() } };

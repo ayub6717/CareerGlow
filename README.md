@@ -1,4 +1,4 @@
-# Blueprint — Life Planner
+# Lifenest — Life Planner
 
 A personal planning app: goals with automatic money and time maths, tasks, wallets and spending, a budget
 calculator, reminders, a job-application tracker and a skills tracker with automatic progress.

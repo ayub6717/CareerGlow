@@ -1,8 +1,8 @@
 #!/bin/bash
-# Blueprint — one-time setup (macOS). Double-click this file in Finder.
+# Lifenest — one-time setup (macOS). Double-click this file in Finder.
 cd "$(dirname "$0")" || exit 1
 echo ""
-echo "=== Blueprint setup ==="
+echo "=== Lifenest setup ==="
 if ! command -v node >/dev/null 2>&1; then
   echo ""
   echo "Node.js is not installed on this Mac."
@@ -22,6 +22,6 @@ echo ""
 echo "Checking the build…"
 npm run build || { echo "Build failed — see the messages above."; read -n 1 -s -r -p "Press any key to close…"; exit 1; }
 echo ""
-echo "Setup complete. Starting Blueprint at http://localhost:5173 (keep this window open; Ctrl+C to stop)…"
+echo "Setup complete. Starting Lifenest at http://localhost:5173 (keep this window open; Ctrl+C to stop)…"
 ( sleep 2; open "http://localhost:5173" ) &
 npm run dev

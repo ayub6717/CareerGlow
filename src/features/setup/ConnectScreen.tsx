@@ -32,8 +32,8 @@ export default function ConnectScreen({ auth, savedId, onReady, onDemo }: {
   };
 
   const create = async () => {
-    setError(''); setStep('busy'); setBusyText('Creating “Blueprint — Life Planner” in your Google Drive…');
-    try { onReady(await GoogleSheetsStorage.create(auth!, 'Blueprint — Life Planner')); }
+    setError(''); setStep('busy'); setBusyText('Creating “Lifenest — Life Planner” in your Google Drive…');
+    try { onReady(await GoogleSheetsStorage.create(auth!, 'Lifenest — Life Planner')); }
     catch (e) { setError(e instanceof Error ? e.message : 'Could not create the spreadsheet.'); setStep('choose'); }
   };
 
@@ -47,8 +47,8 @@ export default function ConnectScreen({ auth, savedId, onReady, onDemo }: {
     <div className="grid min-h-dvh place-items-center px-4 py-10 pt-safe">
       <div className="w-full max-w-[460px]">
         <div className="mb-6 flex items-center gap-3">
-          <img src="/icon.svg" alt="" className="size-10" />
-          <div><div className="font-display text-2xl font-bold tracking-tight">Blueprint</div><div className="text-sm text-mute">Plan it. Fund it. Finish it.</div></div>
+          <img src="/lifenest-logo.svg" alt="" className="size-10" />
+          <div><div className="font-display text-2xl font-bold tracking-tight">Lifenest</div><div className="text-sm text-mute">Where your life comes together.</div></div>
         </div>
 
         <div className="card flex flex-col gap-4">
@@ -78,7 +78,7 @@ export default function ConnectScreen({ auth, savedId, onReady, onDemo }: {
             <>
               <div>
                 <h1 className="h2">Choose your spreadsheet</h1>
-                <p className="mt-1.5 text-[15px] text-mute">Create a new one with all the tabs set up, or connect a sheet you already use for Blueprint.</p>
+                <p className="mt-1.5 text-[15px] text-mute">Create a new one with all the tabs set up, or connect a sheet you already use for Lifenest.</p>
               </div>
               <button className="btn btn-primary" onClick={create}><Icon name="sheet" size={18} />Create a new spreadsheet</button>
               <div className="flex items-center gap-3 text-[13px] text-mute"><span className="h-px flex-1 bg-line" />or<span className="h-px flex-1 bg-line" /></div>

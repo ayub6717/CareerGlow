@@ -141,8 +141,8 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
         {/* Mobile top bar */}
         <header className="sticky top-0 z-20 flex items-center justify-between gap-2.5 border-b border-line bg-white/95 py-2 pl-4 pr-2 pt-[calc(8px+env(safe-area-inset-top))] backdrop-blur-md md:hidden">
           <div className="flex min-w-0 items-center gap-2.5">
-            <img src="/icon.svg" alt="" className="size-7" />
-            <div className="min-w-0"><div className="text-[12px] leading-none text-mute">Blueprint</div><div className="truncate text-[17px] font-semibold leading-tight">{TITLES[view]}</div></div>
+            <img src="/lifenest-logo.svg" alt="" className="size-7" />
+            <div className="min-w-0"><div className="text-[12px] leading-none text-mute">Lifenest</div><div className="truncate text-[17px] font-semibold leading-tight">{TITLES[view]}</div></div>
           </div>
           <div className="flex items-center"><SaveDot />{badge > 0 && <button className="icon-btn relative" aria-label={`${badge} reminders due`} onClick={() => go('reminders')}><Icon name="bell" size={22} /><span className="absolute right-2.5 top-2.5 size-2.5 rounded-full border-2 border-white bg-amber" /></button>}</div>
         </header>
@@ -185,9 +185,9 @@ export default function AppShell({ onDisconnect }: { onDisconnect?: (forget: boo
 
 function Brand() {
   return (
-    <div className="flex items-center gap-3 px-2">
-      <img src="/icon.svg" alt="" className="size-8" />
-      <div><div className="font-display text-[21px] font-bold leading-none tracking-tight">Blueprint</div><div className="mt-1 text-[12px] text-mute">Plan it. Fund it. Finish it.</div></div>
+    <div className="flex h-10 items-center gap-2.5 px-2" title="Lifenest — Where your life comes together.">
+      <img src="/lifenest-logo.svg" alt="" className="size-9 shrink-0" />
+      <span className="font-display text-[23px] font-bold leading-none tracking-[-0.02em]">Lifenest</span>
     </div>
   );
 }
