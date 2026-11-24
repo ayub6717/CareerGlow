@@ -45,7 +45,8 @@ export interface Txn {
   categoryId: string; tags: string[];
 }
 export interface Budget { id: string; name: string; order: number }
-export interface BudgetLine { id: string; budgetId: string; label: string; amount: string; order: number }
+/** `done` = already spent / closed: still shown (struck through) but not counted in the total. */
+export interface BudgetLine { id: string; budgetId: string; label: string; amount: string; order: number; done: boolean }
 export interface Reminder {
   id: string; title: string; date: string; kind: ReminderKind; repeat: Repeat; amount: number;
   walletId: string; leadDays: number; lastDone: string; done: boolean;

@@ -13,9 +13,10 @@ export default function Budget() {
   const [paste, setPaste] = useState('');
   const sel = budgets.find((b) => b.id === selId) ?? budgets[0];
   const linesOf = (id: string) => db.budgetLines.filter((l) => l.budgetId === id).sort((a, b) => a.order - b.order);
-  const totalOf = (id: string) => linesOf(id).reduce((a, l) => { const v = parseAmount(l.amount); return a + (Number.isFinite(v) ? v : 0); }, 0);
+  /** Lines ticked as done are kept for reference but not counted. */
+  const totalOf = (id: string) => linesOf(id).reduce((a, l) => { const v = parseAmount(l.amount); return a + (!l.done && Number.isFinite(v) ? v : 0); }, 0);
 
-  const newBudget = () => { const id = uid(); create('budgets', { id, name: 'New budget', order: (budgets.at(-1)?.order ?? -1) + 1 }); create('budgetLines', { id: uid(), budgetId: id, label: '', amount: '', order: 0 }); setSelId(id); };
+  const newBudget = () => { const id = uid(); create('budgets', { id, name: 'New budget', order: (budgets.at(-1)?.order ?? -1) + 1 }); create('budgetLines', { id: uid(), budgetId: id, label: '', amount: '', order: 0, done: false }); setSelId(id); };
 
   if (!sel) {
     return (
@@ -28,8 +29,11 @@ export default function Budget() {
 
   const lines = linesOf(sel.id), total = totalOf(sel.id);
   const bad = lines.filter((l) => l.amount.trim() && !Number.isFinite(parseAmount(l.amount))).length;
-  const counted = lines.filter((l) => { const v = parseAmount(l.amount); return Number.isFinite(v) && v > 0; });
-  const minus = lines.filter((l) => { const v = parseAmount(l.amount); return Number.isFinite(v) && v < 0; });
+  const open = lines.filter((l) => !l.done);
+  const done = lines.filter((l) => l.done);
+  const doneSum = done.reduce((a, l) => { const v = parseAmount(l.amount); return a + (Number.isFinite(v) ? v : 0); }, 0);
+  const counted = open.filter((l) => { const v = parseAmount(l.amount); return Number.isFinite(v) && v > 0; });
+  const minus = open.filter((l) => { const v = parseAmount(l.amount); return Number.isFinite(v) && v < 0; });
   const added = counted.reduce((a, l) => a + parseAmount(l.amount), 0);
   const taken = minus.reduce((a, l) => a - parseAmount(l.amount), 0);
   /** Flip a line between add (+) and subtract (−) by adding or removing the leading minus. */
@@ -43,7 +47,7 @@ export default function Budget() {
     const rows = parseBudgetLines(paste);
     if (!rows.length) return;
     lines.filter((l) => !l.label.trim() && !l.amount.trim()).forEach((l) => remove('budgetLines', l.id));
-    create('budgetLines', rows.map((r, i) => ({ id: uid(), budgetId: sel.id, label: r.label, amount: r.amount, order: nextOrder + i })), `Added ${rows.length} line${rows.length === 1 ? '' : 's'}`);
+    create('budgetLines', rows.map((r, i) => ({ id: uid(), budgetId: sel.id, label: r.label, amount: r.amount, order: nextOrder + i, done: false })), `Added ${rows.length} line${rows.length === 1 ? '' : 's'}`);
     setPaste('');
   };
   const toGoal = () => {
@@ -63,25 +67,29 @@ export default function Budget() {
       <div className="flex flex-wrap items-start gap-5">
         <Card className="flex min-w-0 flex-[999_1_480px] flex-col gap-3">
           <input aria-label="Budget name" className="input input-ghost !pl-0 font-display !text-[22px] font-semibold" value={sel.name} placeholder="Budget name" onChange={(e) => update('budgets', sel.id, { name: e.target.value }, { debounce: true })} />
-          <div className="flex gap-2 text-[13px] text-mute"><span className="w-9 shrink-0 text-center">±</span><span className="flex-[1.4_1_0]">Item</span><span className="flex-[1_1_0] pr-11 text-right">Amount (৳)</span></div>
+          <div className="flex gap-2 text-[13px] text-mute"><span className="w-[22px] shrink-0" aria-hidden="true" /><span className="w-9 shrink-0 text-center">±</span><span className="flex-[1.4_1_0]">Item</span><span className="flex-[1_1_0] pr-11 text-right">Amount (৳)</span></div>
           <ul>{lines.map((l) => {
             const v = parseAmount(l.amount), raw = l.amount.trim(), ok = Number.isFinite(v), neg = raw.startsWith('-');
             return (
-              <li key={l.id} className="row-item !items-start !gap-2 !py-1.5">
+              <li key={l.id} className={`row-item !items-start !gap-2 !py-1.5 ${l.done ? 'opacity-60' : ''}`}>
+                {/* done = already spent: kept for reference, not counted */}
+                <input type="checkbox" className="checkbox mt-[11px]" checked={!!l.done} onChange={() => update('budgetLines', l.id, { done: !l.done }, { toast: l.done ? 'Back in the total' : 'Marked done — not counted any more' })}
+                  aria-label={l.done ? 'Done — untick to count it again' : 'Mark as done (already spent)'} title={l.done ? 'Done — not counted. Untick to count it again' : 'Mark as done (already spent)'} />
                 <button type="button" onClick={() => flip(l.id, l.amount)} aria-label={neg ? 'Subtracting — tap to add instead' : 'Adding — tap to subtract instead'} title={neg ? 'Subtract (tap to add)' : 'Add (tap to subtract)'}
                   className={`mt-1 grid size-9 shrink-0 place-items-center rounded-[10px] text-[20px] font-semibold leading-none ${neg ? 'bg-rose-soft text-rose-ink' : 'bg-mint-soft text-mint-ink'}`}>{neg ? '−' : '+'}</button>
-                <input className="input flex-[1.4_1_0]" aria-label="Item" value={l.label} placeholder="e.g. Laptop" onChange={(e) => update('budgetLines', l.id, { label: e.target.value }, { debounce: true })} />
+                <input className={`input flex-[1.4_1_0] ${l.done ? 'text-mute line-through decoration-2' : ''}`} aria-label="Item" value={l.label} placeholder="e.g. Laptop" onChange={(e) => update('budgetLines', l.id, { label: e.target.value }, { debounce: true })} />
                 <div className="flex min-w-0 flex-[1_1_0] flex-col gap-0.5">
-                  <input className={`input num text-right ${neg && ok ? 'text-rose-ink' : ''}`} aria-label="Amount" inputMode="decimal" value={l.amount} placeholder="120k" aria-invalid={!!raw && !ok} onChange={(e) => update('budgetLines', l.id, { amount: e.target.value }, { debounce: true })} />
-                  {raw && <span className={`num text-right text-[12px] ${ok ? 'text-mute' : 'text-rose-ink'}`}>{!ok ? 'can’t read this' : /^-?[\d,]+$/.test(raw) ? '' : `= ${tk(v)}`}</span>}
+                  <input className={`input num text-right ${l.done ? 'text-mute line-through decoration-2' : neg && ok ? 'text-rose-ink' : ''}`} aria-label="Amount" inputMode="decimal" value={l.amount} placeholder="120k" aria-invalid={!!raw && !ok} onChange={(e) => update('budgetLines', l.id, { amount: e.target.value }, { debounce: true })} />
+                  {l.done ? <span className="text-right text-[12px] text-mint-ink">done · not counted</span> : raw && <span className={`num text-right text-[12px] ${ok ? 'text-mute' : 'text-rose-ink'}`}>{!ok ? 'can’t read this' : /^-?[\d,]+$/.test(raw) ? '' : `= ${tk(v)}`}</span>}
                 </div>
                 <IconButton icon="x" label="Remove line" className="mt-1" onClick={() => remove('budgetLines', l.id)} />
               </li>
             );
           })}</ul>
-          <div><button className="btn btn-sm btn-ghost" onClick={() => create('budgetLines', { id: uid(), budgetId: sel.id, label: '', amount: '', order: nextOrder })}>+ Add line</button></div>
+          <div><button className="btn btn-sm btn-ghost" onClick={() => create('budgetLines', { id: uid(), budgetId: sel.id, label: '', amount: '', order: nextOrder, done: false })}>+ Add line</button></div>
           <div className="flex items-end justify-between border-t border-line pt-3.5">
-            <div><div className="lbl">Total</div><div className="text-[13px] text-mute">{counted.length} added{minus.length ? ` · ${minus.length} subtracted` : ''}{bad ? ` · ${bad} not understood` : ''}</div>
+            <div><div className="lbl">Total</div><div className="text-[13px] text-mute">{counted.length} added{minus.length ? ` · ${minus.length} subtracted` : ''}{done.length ? ` · ${done.length} done` : ''}{bad ? ` · ${bad} not understood` : ''}</div>
+              {done.length > 0 && <div className="num mt-1 text-[13px] text-mint-ink">✓ Done (not counted): {tk(doneSum)}</div>}
               {minus.length > 0 && <div className="num mt-1 text-[13px] text-mute"><span className="text-mint-ink">+{tk(added)}</span> <span className="text-rose-ink">−{tk(taken)}</span></div>}</div>
             <div className="text-right"><div className={`num text-[30px] ${total < 0 ? 'text-rose-ink' : 'text-pri-ink'}`}>{tk(total)}</div>{Math.abs(total) >= 1e5 && <div className="text-[13px] text-mute">≈ {tkS(total)}</div>}</div>
           </div>

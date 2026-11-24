@@ -22,7 +22,7 @@ Values are written in RAW mode, so text that starts with `=` is stored as text, 
 | Transactions | id, date, desc, amount, kind, category, walletId, toWalletId, createdAt, categoryId, tags | `kind` ∈ out, in, move (transfer). `walletId`/`toWalletId` → Wallets.id. `categoryId` → Categories.id (`category` keeps the name). `desc` is the comment. `tags` = comma-separated |
 | Categories | id, name, kind, icon, color, order | `kind` ∈ out (expense), in (income). Filled with defaults the first time the Money section opens |
 | Budgets | id, name, order | — |
-| Budget Lines | id, budgetId, label, amount, order | `budgetId` → Budgets.id. `amount` is text such as `120k` |
+| Budget Lines | id, budgetId, label, amount, order, done | `budgetId` → Budgets.id. `amount` is text such as `120k`. `done` = TRUE → already spent: shown struck through, not counted in the total |
 | Reminders | id, title, date, kind, repeat, amount, walletId, leadDays, lastDone, done | `repeat` ∈ none, monthly, yearly |
 | Content | id, title, platform, stage, date, views | — |
 | Decisions | id, date, title, why, expect, reviewDate, outcome | — |

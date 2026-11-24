@@ -83,7 +83,7 @@ export function demoDB(): DB {
   ];
   const b1 = uid();
   db.budgets = [{ id: b1, name: 'Gadgets', order: 0 }];
-  db.budgetLines = [{ id: uid(), budgetId: b1, label: 'Laptop', amount: '120k', order: 0 }, { id: uid(), budgetId: b1, label: 'Mobile', amount: '110k', order: 1 }];
+  db.budgetLines = [{ id: uid(), budgetId: b1, label: 'Laptop', amount: '120k', order: 0, done: false }, { id: uid(), budgetId: b1, label: 'Mobile', amount: '110k', order: 1, done: false }];
   db.reminders = [
     { id: uid(), title: 'Internet bill', date: addDays(3), kind: 'Bill', repeat: 'monthly', amount: 1500, walletId: 'w2', leadDays: 3, lastDone: '', done: false },
     { id: uid(), title: 'Income tax return (check the deadline)', date: '2026-11-30', kind: 'Tax', repeat: 'yearly', amount: 0, walletId: 'w1', leadDays: 30, lastDone: '', done: false },

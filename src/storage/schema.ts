@@ -52,7 +52,7 @@ export const SCHEMA: Schema = {
   },
   categories: { sheet: 'Categories', fields: { id: 'string', name: 'string', kind: 'string', icon: 'string', color: 'string', order: 'number' } },
   budgets: { sheet: 'Budgets', fields: { id: 'string', name: 'string', order: 'number' }, cascade: [{ table: 'budgetLines', key: 'budgetId' }] },
-  budgetLines: { sheet: 'Budget Lines', fields: { id: 'string', budgetId: 'string', label: 'string', amount: 'string', order: 'number' } },
+  budgetLines: { sheet: 'Budget Lines', fields: { id: 'string', budgetId: 'string', label: 'string', amount: 'string', order: 'number', done: 'boolean' } },
   reminders: {
     sheet: 'Reminders',
     fields: {
